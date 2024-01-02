@@ -91,7 +91,12 @@ namespace Serie_I
             Console.WriteLine("Exercice V - Les nombres premiers");
             Console.WriteLine("---------------------------------");
 
+            Console.WriteLine();
+
             PrimeNumbers.DisplayPrimes();
+
+            Console.WriteLine();
+
             #endregion
 
             #region Exercice VI - Algorithme d'Euclide
