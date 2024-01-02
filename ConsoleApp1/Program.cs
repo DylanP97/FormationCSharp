@@ -10,8 +10,12 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World ! ! ! !");
-            Console.WriteLine("Bye World ! ! ! !");
+            string name = "Dylan";
+            int age = 440;
+            bool isCoding = true;
+            byte dfs = 1;
+            Console.WriteLine($"Hello {name}, {age}, byte : {dfs}");
+            Console.WriteLine($"Bye {name}");
             Console.ReadLine();
         }
     }
