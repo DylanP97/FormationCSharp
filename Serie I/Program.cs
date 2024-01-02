@@ -49,7 +49,9 @@ namespace Serie_I
             Console.WriteLine("Exercice II - Horloge parlante");
             Console.WriteLine("------------------------------");
 
+            Console.WriteLine();
             Console.WriteLine(SpeakingClock.GoodDay(DateTime.Now.Hour));
+            Console.WriteLine();
             #endregion
 
             #region Exercice III - Construction d'une pyramide
