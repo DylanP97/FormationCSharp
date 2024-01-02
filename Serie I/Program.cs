@@ -59,9 +59,13 @@ namespace Serie_I
             Console.WriteLine("Exercice III - Construction d'une pyramide");
             Console.WriteLine("------------------------------------------");
 
+            Console.WriteLine();
+
             Pyramid.PyramidConstruction(10, true);
             Pyramid.PyramidConstruction(10, false);
             Pyramid.PyramidConstruction(0, true);
+
+            Console.WriteLine();
             #endregion
 
             #region Exercice IV - Factorielle
