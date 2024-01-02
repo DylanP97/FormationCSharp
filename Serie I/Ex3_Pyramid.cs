@@ -11,14 +11,18 @@ namespace Serie_I
         public static void PyramidConstruction(int n, bool isSmooth)
         {
 
+            if (isSmooth)
+            {
+                Console.WriteLine($"Voici une pyramide style Las Vegas avec {n} étages : ");
+            } else
+            {
+                Console.WriteLine($"Voici une pyramide style Gizeh avec {n} étages : ");
+            }
             Console.WriteLine();
-            Console.WriteLine($"Voici la pyramide avec le nombre {n} et avec le paramètre isSmooth {isSmooth} : ");
-            Console.WriteLine();
-
 
             if (n <= 0)
             {
-                Console.WriteLine("La taille de la base doit être un entier positif.");
+                Console.WriteLine("La nombre d'étages doit être un supérieur à 0.");
                 return;
             }
 
@@ -31,38 +35,45 @@ namespace Serie_I
                     Console.Write(" ");
                 }
 
-                // Affichage des étoiles
-                for (int k = 0; k < 2 * i + 1; k++)
+                if (isSmooth)
                 {
-                    Console.Write("*");
+                    // Style Vegas
+                    for (int k = 0; k < 2 * i + 1; k++)
+                    {
+                        if (k % 2 == 0)
+                        {
+                            Console.Write("/");
+                        }
+                        else
+                        {
+                            Console.Write("\\");
+                        }
+                    }
+                    Console.Write("\\");
                 }
-
+                else
+                {
+                    // Style Gizeh
+                    for (int k = 0; k < 2 * i + 1; k++)
+                    {
+                        if (i == 0)
+                        {
+                            Console.Write("_");
+                        }
+                        else if (k % 2 == 0)
+                        {
+                            Console.Write("|");
+                        }
+                        else
+                        {
+                            Console.Write("_");
+                        }
+                    }
+                }
                 // Saut de ligne après chaque ligne de la base
                 Console.WriteLine();
             }
-
-            // Si la pyramide doit être lisse, afficher les côtés
-            if (isSmooth)
-            {
-                for (int i = 0; i < n - 1; i++)
-                {
-                    // Affichage des espaces
-                    for (int j = 0; j < i + 1; j++)
-                    {
-                        Console.Write(" ");
-                    }
-
-                    // Affichage des étoiles
-                    Console.Write("*");
-
-                    for (int k = 0; k < 2 * (n - i - 1) - 1; k++)
-                    {
-                        Console.Write(" ");
-                    }
-
-                    Console.WriteLine("*");
-                }
-            }
+            Console.WriteLine();
         }
     }
 }
