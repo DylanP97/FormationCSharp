@@ -69,6 +69,8 @@ namespace Serie_I
             Console.WriteLine("Exercice IV - Factorielle");
             Console.WriteLine("-------------------------");
 
+            Console.WriteLine();
+
             int number;
             do
             {
@@ -79,6 +81,9 @@ namespace Serie_I
 
             Console.WriteLine($"Factorielle de {number} : {Factorial.Factorial_(number)}");
             Console.WriteLine($"Factorielle de {number} : {Factorial.FactorialRecursive(number)} [R]");
+
+            Console.WriteLine();
+
             #endregion
 
             #region Exercice V - Les nombres premiers
