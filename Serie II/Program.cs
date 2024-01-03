@@ -17,9 +17,14 @@ namespace Serie_II
 
             int[] arr = { 1, -5, 10, -3, 0, 4, 2, -7 };
             int val = 2;
-            Console.WriteLine(Search.LinearSearch(arr, val));
+
+            Console.WriteLine();
+            Console.WriteLine(val + " se trouve à l'index : " + Search.LinearSearch(arr, val));
             Array.Sort(arr);
-            Console.WriteLine(Search.BinarySearch(arr, val));
+            Console.WriteLine(val + " se trouve à l'index : " + Search.BinarySearch(arr, val));
+            Console.WriteLine("Il faut noter que pour la recherche dichotomique/binaire, le tableau a " +
+                "été initialement trier. L'ordre des valeurs a donc été modifié.");
+            Console.WriteLine();
             #endregion
 
             #region Exercice II - Bases du calcul matriciel
@@ -30,6 +35,9 @@ namespace Serie_II
             int[] u = { 1, 2, 3 };
             int[] v = { -1, -4, 0 };
             int[][] matrice = Matrix.BuildingMatrix(u, v);
+            Console.WriteLine();
+            Console.WriteLine("Une nouvelle matrice");
+            Console.WriteLine();
             Matrix.DisplayMatrix(matrice);
 
             int[][] matriceGauche = new int[3][]
@@ -47,8 +55,10 @@ namespace Serie_II
             };
 
             Console.WriteLine("Addition");
+            Console.WriteLine();
             Matrix.DisplayMatrix(Matrix.Addition(matriceGauche, matriceDroite));
             Console.WriteLine("Soustraction");
+            Console.WriteLine();
             Matrix.DisplayMatrix(Matrix.Substraction(matriceGauche, matriceDroite));
             matriceDroite = new int[2][]
             {
@@ -56,71 +66,72 @@ namespace Serie_II
                 new int[3] { -4, 0, 1 }
             };
             Console.WriteLine("Multiplication");
+            Console.WriteLine();
             Matrix.DisplayMatrix(Matrix.Multiplication(matriceGauche, matriceDroite));
             #endregion
 
-            #region Exercice III - Crible d'Eratosthène
-            Console.WriteLine("-----------------------------------");
-            Console.WriteLine("Exercice III - Crible d'Eratosthène");
-            Console.WriteLine("-----------------------------------");
+            //#region Exercice III - Crible d'Eratosthène
+            //Console.WriteLine("-----------------------------------");
+            //Console.WriteLine("Exercice III - Crible d'Eratosthène");
+            //Console.WriteLine("-----------------------------------");
 
-            int[] res = Eratosthene.EratosthenesSieve(100);
-            foreach (int nbr in res)
-            {
-                if (nbr != int.MinValue)
-                {
-                    Console.WriteLine(nbr);
-                }
-            }
-            #endregion
+            //int[] res = Eratosthene.EratosthenesSieve(100);
+            //foreach (int nbr in res)
+            //{
+            //    if (nbr != int.MinValue)
+            //    {
+            //        Console.WriteLine(nbr);
+            //    }
+            //}
+            //#endregion
 
-            #region Exercice IV - Questionnaire à choix multiple
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine("Exercice IV - Questionnaire à choix multiple");
-            Console.WriteLine("--------------------------------------------");
+            //#region Exercice IV - Questionnaire à choix multiple
+            //Console.WriteLine("--------------------------------------------");
+            //Console.WriteLine("Exercice IV - Questionnaire à choix multiple");
+            //Console.WriteLine("--------------------------------------------");
 
-            Qcm[] qcms = new Qcm[3]
-            {
-                new Qcm
-                {
-                    Question = "Quelle est l'année du sacre de Charlemagne ?",
-                    Answers = new string[]
-                    {
-                        "476",
-                        "800",
-                        "1066",
-                        "1789",
-                    },
-                    Solution = 1,
-                    Weight = 1,
-                },
-                new Qcm
-                {
-                    Question = "Quel est le nom du président de la République en 2021 ?",
-                    Answers = new string[]
-                    {
-                        "Chirac",
-                        "De Gaulle",
-                        "Macron",
-                    },
-                    Solution = 2,
-                    Weight = 1,
-                },
-                new Qcm
-                {
-                    Question = "Quel est le nom du président de la République en 2021 ?",
-                    Answers = new string[]
-                    {
-                        "Chirac",
-                        "De Gaulle",
-                        "Macron",
-                    },
-                    Solution = 2,
-                    Weight = -1,
-                }
-            };
-            Quiz.AskQuestions(qcms);
-            #endregion
+            //Qcm[] qcms = new Qcm[3]
+            //{
+            //    new Qcm
+            //    {
+            //        Question = "Quelle est l'année du sacre de Charlemagne ?",
+            //        Answers = new string[]
+            //        {
+            //            "476",
+            //            "800",
+            //            "1066",
+            //            "1789",
+            //        },
+            //        Solution = 1,
+            //        Weight = 1,
+            //    },
+            //    new Qcm
+            //    {
+            //        Question = "Quel est le nom du président de la République en 2021 ?",
+            //        Answers = new string[]
+            //        {
+            //            "Chirac",
+            //            "De Gaulle",
+            //            "Macron",
+            //        },
+            //        Solution = 2,
+            //        Weight = 1,
+            //    },
+            //    new Qcm
+            //    {
+            //        Question = "Quel est le nom du président de la République en 2021 ?",
+            //        Answers = new string[]
+            //        {
+            //            "Chirac",
+            //            "De Gaulle",
+            //            "Macron",
+            //        },
+            //        Solution = 2,
+            //        Weight = -1,
+            //    }
+            //};
+            //Quiz.AskQuestions(qcms);
+            //#endregion
 
             // Keep the console window open
             Console.WriteLine("----------------------");
