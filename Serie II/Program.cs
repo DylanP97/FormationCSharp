@@ -85,53 +85,53 @@ namespace Serie_II
             }
             #endregion
 
-            //#region Exercice IV - Questionnaire à choix multiple
-            //Console.WriteLine("--------------------------------------------");
-            //Console.WriteLine("Exercice IV - Questionnaire à choix multiple");
-            //Console.WriteLine("--------------------------------------------");
+            #region Exercice IV - Questionnaire à choix multiple
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine("Exercice IV - Questionnaire à choix multiple");
+            Console.WriteLine("--------------------------------------------");
 
-            //Qcm[] qcms = new Qcm[3]
-            //{
-            //    new Qcm
-            //    {
-            //        Question = "Quelle est l'année du sacre de Charlemagne ?",
-            //        Answers = new string[]
-            //        {
-            //            "476",
-            //            "800",
-            //            "1066",
-            //            "1789",
-            //        },
-            //        Solution = 1,
-            //        Weight = 1,
-            //    },
-            //    new Qcm
-            //    {
-            //        Question = "Quel est le nom du président de la République en 2021 ?",
-            //        Answers = new string[]
-            //        {
-            //            "Chirac",
-            //            "De Gaulle",
-            //            "Macron",
-            //        },
-            //        Solution = 2,
-            //        Weight = 1,
-            //    },
-            //    new Qcm
-            //    {
-            //        Question = "Quel est le nom du président de la République en 2021 ?",
-            //        Answers = new string[]
-            //        {
-            //            "Chirac",
-            //            "De Gaulle",
-            //            "Macron",
-            //        },
-            //        Solution = 2,
-            //        Weight = -1,
-            //    }
-            //};
-            //Quiz.AskQuestions(qcms);
-            //#endregion
+            Qcm[] qcms = new Qcm[3]
+            {
+                new Qcm
+                {
+                    Question = "Quelle est l'année du sacre de Charlemagne ?",
+                    Answers = new string[]
+                    {
+                        "476",
+                        "800",
+                        "1066",
+                        "1789",
+                    },
+                    Solution = 1,
+                    Weight = 1,
+                },
+                new Qcm
+                {
+                    Question = "Quel est le nom du président de la République en 2021 ?",
+                    Answers = new string[]
+                    {
+                        "Chirac",
+                        "De Gaulle",
+                        "Macron",
+                    },
+                    Solution = 2,
+                    Weight = 1,
+                },
+                new Qcm
+                {
+                    Question = "Quel est le nom du président de la République en 2021 ?",
+                    Answers = new string[]
+                    {
+                        "Chirac",
+                        "De Gaulle",
+                        "Macron",
+                    },
+                    Solution = 2,
+                    Weight = 1,
+                }
+            };
+            Quiz.AskQuestions(qcms);
+            #endregion
 
             // Keep the console window open
             Console.WriteLine("----------------------");
