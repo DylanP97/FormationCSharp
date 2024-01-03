@@ -70,20 +70,20 @@ namespace Serie_II
             Matrix.DisplayMatrix(Matrix.Multiplication(matriceGauche, matriceDroite));
             #endregion
 
-            //#region Exercice III - Crible d'Eratosthène
-            //Console.WriteLine("-----------------------------------");
-            //Console.WriteLine("Exercice III - Crible d'Eratosthène");
-            //Console.WriteLine("-----------------------------------");
+            #region Exercice III - Crible d'Eratosthène
+            Console.WriteLine("-----------------------------------");
+            Console.WriteLine("Exercice III - Crible d'Eratosthène");
+            Console.WriteLine("-----------------------------------");
 
-            //int[] res = Eratosthene.EratosthenesSieve(100);
-            //foreach (int nbr in res)
-            //{
-            //    if (nbr != int.MinValue)
-            //    {
-            //        Console.WriteLine(nbr);
-            //    }
-            //}
-            //#endregion
+            int[] res = Eratosthene.EratosthenesSieve(100);
+            foreach (int nbr in res)
+            {
+                if (nbr != int.MinValue)
+                {
+                    Console.WriteLine(nbr);
+                }
+            }
+            #endregion
 
             //#region Exercice IV - Questionnaire à choix multiple
             //Console.WriteLine("--------------------------------------------");
