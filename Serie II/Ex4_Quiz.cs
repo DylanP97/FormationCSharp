@@ -25,15 +25,16 @@ namespace Serie_II
                 Console.WriteLine($"Question {i + 1}: {qcms[i].Question}");
                 for (int j = 0; j < qcms[i].Answers.Length; j++)
                 {
-                    Console.WriteLine($"{j + 1}. {qcms[i].Answers[j]}");
+                    Console.Write($"{j + 1}. {qcms[i].Answers[j]}\t");
                 }
+                Console.WriteLine();
 
                 int userAnswer = AskQuestion(qcms[i]);
 
                 if (QcmValidity(qcms[i], userAnswer))
                 {
                     totalScore += qcms[i].Weight;
-                    Console.WriteLine("Correct!\n");
+                    Console.WriteLine($"Correct! Cette question vaut {qcms[i].Weight} points, ton score total est désormais de {totalScore} points!");
                 }
                 else
                 {
