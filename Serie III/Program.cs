@@ -31,8 +31,11 @@ namespace Serie_III
             Console.WriteLine(SortingPerformance.UseInsertionSort(a) + " ms");
             Console.WriteLine(SortingPerformance.UseQuickSort(a) + " ms");
 
+            Console.WriteLine();
+
             //List<int> sizes = new List<int> { 2000, 5000, 10000 };
             //int count = 10;
+
             List<int> sizes = new List<int> { 2000, 5000, 10000, 20000, 50000, 100000 };
             int count = 50;
             SortingPerformance.DisplayPerformances(sizes, count);

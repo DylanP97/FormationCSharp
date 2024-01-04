@@ -31,37 +31,97 @@ namespace Serie_III
     {
         public static void DisplayPerformances(List<int> sizes, int count)
         {
-            //TODO
+            List<SortData> performances = PerformancesTest(sizes, count);
+
+            Console.WriteLine("Size\tInsertion (Mean)\tInsertion (Std)" +
+                "\tQuick (Mean)\tQuick (Std)");
+            Console.WriteLine("---------------------------------------------------------------");
+
+            for (int i = 0; i < sizes.Count; i++)
+            {
+                Console.WriteLine($"{sizes[i]}\t{performances[i].InsertionMean}\t{performances[i].InsertionStd}\t{performances[i].QuickMean}\t{performances[i].QuickStd}");
+            }
         }
 
         public static List<SortData> PerformancesTest(List<int> sizes, int count)
         {
-            //TODO
-            return new List<SortData>();
+            List<SortData> performances = new List<SortData>();
+
+            foreach (int size in sizes)
+            {
+                SortData data = PerformanceTest(size, count);
+                performances.Add(data);
+            }
+
+            return performances;
         }
 
         public static SortData PerformanceTest(int size, int count)
         {
-            //TODO
-            return new SortData();
+            List<long> insertionTimes = new List<long>();
+            List<long> quickTimes = new List<long>();
+
+            for (int i = 0; i < count; i++)
+            {
+                int[] array = ArraysGenerator(size).First(); // Taking the first generated array
+
+                long insertionTime = UseInsertionSort(array);
+                long quickTime = UseQuickSort(array);
+
+                insertionTimes.Add(insertionTime);
+                quickTimes.Add(quickTime);
+            }
+
+            SortData data = new SortData
+            {
+                InsertionMean = insertionTimes.Sum() / count,
+                //InsertionStd = CalculateStandardDeviation(insertionTimes),
+                QuickMean = quickTimes.Sum() / count,
+                //QuickStd = CalculateStandardDeviation(quickTimes)
+            };
+
+            return data;
         }
 
         private static List<int[]> ArraysGenerator(int size)
         {
-            //TODO
-            return new List<int[]>();
+            List<int[]> arrays = new List<int[]>();
+
+            Random random = new Random();
+            for (int i = 0; i < 2; i++) // Generating a pair of identical arrays
+            {
+                int[] array = new int[size];
+                for (int j = 0; j < size; j++)
+                {
+                    array[j] = random.Next(-1000, 1001);
+                }
+                arrays.Add(array);
+            }
+
+            return arrays;
         }
+
 
         public static long UseInsertionSort(int[] array)
         {
-            // TODO
-            return -1;
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            InsertionSort(array);
+
+            stopwatch.Stop();
+            return stopwatch.ElapsedMilliseconds;
         }
 
         public static long UseQuickSort(int[] array)
         {
-            //TODO
-            return -1;
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            QuickSort(array, 0, array.Length - 1);
+
+            stopwatch.Stop();
+            return stopwatch.ElapsedMilliseconds;
         }
 
         private static void InsertionSort(int[] array)
