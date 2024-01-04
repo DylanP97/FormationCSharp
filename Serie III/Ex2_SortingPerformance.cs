@@ -33,13 +33,15 @@ namespace Serie_III
         {
             List<SortData> performances = PerformancesTest(sizes, count);
 
-            Console.WriteLine("Size\tInsertion (Mean)\tInsertion (Std)" +
-                "\tQuick (Mean)\tQuick (Std)");
+            Console.WriteLine("Size\t\tInsertion (Mean) Insertion (Std)" +
+                " Quick (Mean) Quick (Std)");
             Console.WriteLine("---------------------------------------------------------------");
 
             for (int i = 0; i < sizes.Count; i++)
             {
-                Console.WriteLine($"{sizes[i]}\t{performances[i].InsertionMean}\t{performances[i].InsertionStd}\t{performances[i].QuickMean}\t{performances[i].QuickStd}");
+                Console.WriteLine($"{sizes[i]}\t\t{performances[i].InsertionMean}ms" +
+                    $"\t\t{performances[i].InsertionStd}ms\t\t{performances[i].QuickMean}ms" +
+                    $"\t\t{performances[i].QuickStd}ms");
             }
         }
 
@@ -61,12 +63,12 @@ namespace Serie_III
             List<long> insertionTimes = new List<long>();
             List<long> quickTimes = new List<long>();
 
+            List<int[]> arrays = ArraysGenerator(size);
+
             for (int i = 0; i < count; i++)
             {
-                int[] array = ArraysGenerator(size).First(); // Taking the first generated array
-
-                long insertionTime = UseInsertionSort(array);
-                long quickTime = UseQuickSort(array);
+                long insertionTime = UseInsertionSort(arrays[0]);
+                long quickTime = UseQuickSort(arrays[1]);
 
                 insertionTimes.Add(insertionTime);
                 quickTimes.Add(quickTime);
@@ -75,9 +77,9 @@ namespace Serie_III
             SortData data = new SortData
             {
                 InsertionMean = insertionTimes.Sum() / count,
-                //InsertionStd = CalculateStandardDeviation(insertionTimes),
+                InsertionStd = CalculateStandardDeviation(insertionTimes),
                 QuickMean = quickTimes.Sum() / count,
-                //QuickStd = CalculateStandardDeviation(quickTimes)
+                QuickStd = CalculateStandardDeviation(quickTimes)
             };
 
             return data;
@@ -101,6 +103,12 @@ namespace Serie_III
             return arrays;
         }
 
+        private static long CalculateStandardDeviation(List<long> times)
+        {
+            long mean = times.Sum() / times.Count;
+            long sumOfSquares = times.Sum(t => (t - mean) * (t - mean));
+            return (long)Math.Sqrt(sumOfSquares / times.Count);
+        }
 
         public static long UseInsertionSort(int[] array)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,10 +36,21 @@ namespace Serie_III
 
             //List<int> sizes = new List<int> { 2000, 5000, 10000 };
             //int count = 10;
-
-            List<int> sizes = new List<int> { 2000, 5000, 10000, 20000, 50000, 100000 };
+            List<int> sizes = new List<int> { 2000, 5000, 10000 };
             int count = 50;
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             SortingPerformance.DisplayPerformances(sizes, count);
+
+            stopwatch.Stop();
+            Console.WriteLine();
+            Console.WriteLine("Temps d'exécution cumulé totale pour l'évaluation des" +
+                " performances : ");
+            Console.WriteLine("En millisecondes : " + stopwatch.ElapsedMilliseconds + "ms");
+            Console.WriteLine("En secondes : " + stopwatch.ElapsedMilliseconds / 1000 
+                + "s");
             #endregion
 
             // Keep the console window open
