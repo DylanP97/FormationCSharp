@@ -63,10 +63,11 @@ namespace Serie_III
             List<long> insertionTimes = new List<long>();
             List<long> quickTimes = new List<long>();
 
-            List<int[]> arrays = ArraysGenerator(size);
 
             for (int i = 0; i < count; i++)
             {
+                List<int[]> arrays = ArraysGenerator(size);
+
                 long insertionTime = UseInsertionSort(arrays[0]);
                 long quickTime = UseQuickSort(arrays[1]);
 
@@ -87,17 +88,23 @@ namespace Serie_III
 
         private static List<int[]> ArraysGenerator(int size)
         {
-            List<int[]> arrays = new List<int[]>();
+            List<int[]> arrays = new List<int[]> { new int[size], new int[size] };
 
             Random random = new Random();
-            for (int i = 0; i < 2; i++) // Generating a pair of identical arrays
+            //for (int i = 0; i < 2; i++) // Generating a pair of identical arrays
+            //{
+            //    int[] array = new int[size];
+            //    for (int j = 0; j < size; j++)
+            //    {
+            //        array[j] = random.Next(-1000, 1001);
+            //    }
+            //    arrays.Add(array);
+            //}
+
+            for (int i = 0; i < size; i++)
             {
-                int[] array = new int[size];
-                for (int j = 0; j < size; j++)
-                {
-                    array[j] = random.Next(-1000, 1001);
-                }
-                arrays.Add(array);
+                int rnd = random.Next(-1000, 1001);
+                arrays[0][i] = arrays[1][i] = rnd;
             }
 
             return arrays;
