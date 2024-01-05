@@ -78,16 +78,17 @@ namespace Serie_IV
             Console.WriteLine();
 
             #region Exercice IV - Emploi du temps professionnel
-            //Console.WriteLine("-------------------------------------------");
-            //Console.WriteLine("Exercice IV - Emploi du temps professionnel");
-            //Console.WriteLine("-------------------------------------------");
+            Console.WriteLine("-------------------------------------------");
+            Console.WriteLine("Exercice IV - Emploi du temps professionnel");
+            Console.WriteLine("-------------------------------------------");
 
-            //BusinessSchedule bs = new BusinessSchedule();
-            //bs.SetRangeOfDates(new DateTime(2021, 4, 1), new DateTime(2021, 4, 30));
-            //bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 14, 0, 0), new TimeSpan(1, 0, 0));
-            //bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 15, 0, 0), new TimeSpan(1, 0, 0));
-            //bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 14, 30, 0), new TimeSpan(1, 0, 0));
-            //bs.DisplayMeetings();
+            BusinessSchedule bs = new BusinessSchedule();
+            bs.SetRangeOfDates(new DateTime(2021, 4, 1), new DateTime(2021, 4, 30));
+            bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 14, 0, 0), new TimeSpan(1, 0, 0));
+            bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 15, 0, 0), new TimeSpan(1, 0, 0));
+            bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 14, 30, 0), new TimeSpan(1, 0, 0));
+            bs.DeleteBusinessMeeting(new DateTime(2021, 4, 21, 14, 30, 0), new TimeSpan(1, 0, 0));
+            bs.DisplayMeetings();
             #endregion
 
             // Keep the console window open

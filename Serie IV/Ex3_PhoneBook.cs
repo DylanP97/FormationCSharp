@@ -52,7 +52,7 @@ namespace Serie_IV
             } else
             {
                 phoneBook.Add(phoneNumber, name);
-                Console.WriteLine($"Contact ajouté : {name} - {phoneNumber}");
+                Console.WriteLine($"Contact ajouté > {phoneNumber} : {name}");
                 return true;
             }
         }
@@ -83,7 +83,7 @@ namespace Serie_IV
                 Console.WriteLine("Phone Book:");
                 foreach (var entry in phoneBook)
                 {
-                    Console.WriteLine($"{entry.Value} - {entry.Key}");
+                    Console.WriteLine($"{entry.Key} : {entry.Value}");
                 } 
             }
         }

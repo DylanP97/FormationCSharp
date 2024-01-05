@@ -8,44 +8,89 @@ namespace Serie_IV
 {
     public class BusinessSchedule
     {
+        private SortedDictionary<DateTime, DateTime> schedule = new SortedDictionary<DateTime, DateTime>();
+
         public bool IsEmpty()
         {
-            //TODO
-            return false;
+            return schedule.Count == 0;
         }
 
         public void SetRangeOfDates(DateTime begin, DateTime end)
         {
-            //TODO
+            // You can set the range by clearing existing meetings outside the specified range
+            var meetingsToRemove = schedule.Where(kv => kv.Key < begin || kv.Value > end).ToList();
+            foreach (var meeting in meetingsToRemove)
+            {
+                schedule.Remove(meeting.Key);
+            }
         }
 
         private KeyValuePair<DateTime, DateTime> ClosestElements(DateTime beginMeeting)
         {
-            //TODO
-            return new KeyValuePair<DateTime, DateTime>();
+            // You can find the closest elements by searching for the closest key to beginMeeting
+            DateTime closestStart = DateTime.MinValue;
+            DateTime closestEnd = DateTime.MaxValue;
+
+            foreach (var meeting in schedule)
+            {
+                if (meeting.Key <= beginMeeting && meeting.Value >= beginMeeting)
+                {
+                    closestStart = meeting.Key;
+                    closestEnd = meeting.Value;
+                    break;
+                }
+                else if (meeting.Key > beginMeeting)
+                {
+                    closestStart = meeting.Key;
+                    closestEnd = meeting.Value;
+                    break;
+                }
+            }
+
+            return new KeyValuePair<DateTime, DateTime>(closestStart, closestEnd);
         }
 
         public bool AddBusinessMeeting(DateTime date, TimeSpan duration)
         {
-            //TODO
-            return false;
+            DateTime endDateTime = date + duration;
+            schedule.Add(date, endDateTime);
+            return true;
         }
 
         public bool DeleteBusinessMeeting(DateTime date, TimeSpan duration)
         {
-            //TODO
+            DateTime endDateTime = date + duration;
+
+            if (schedule.ContainsKey(date) && schedule[date] == endDateTime)
+            {
+                schedule.Remove(date);
+                return true;
+            }
+
             return false;
         }
 
         public int ClearMeetingPeriod(DateTime begin, DateTime end)
         {
-            //TODO
-            return -1;
+            var meetingsToRemove = schedule.Where(kv => kv.Key >= begin && kv.Value <= end).ToList();
+
+            foreach (var meeting in meetingsToRemove)
+            {
+                schedule.Remove(meeting.Key);
+            }
+
+            return meetingsToRemove.Count;
         }
 
         public void DisplayMeetings()
         {
-            //TODO
+            {
+                Console.WriteLine("Business Meetings:");
+                foreach (var meeting in schedule)
+                {
+                    Console.WriteLine($"Start Time: {meeting.Key}, End Time: {meeting.Value}");
+                }
+            }
         }
     }
 }
