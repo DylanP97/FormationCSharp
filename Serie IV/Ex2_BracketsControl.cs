@@ -12,15 +12,15 @@ namespace Serie_IV
         {
             Stack<char> stack = new Stack<char>();
 
-            foreach (char bracket in brackets)
+            foreach (char character in brackets)
             {
-                if (IsOpeningBracket(bracket))
+                if (IsOpeningBracket(character))
                 {
-                    stack.Push(bracket);
+                    stack.Push(character);
                 }
-                else if (IsClosingBracket(bracket))
+                else if (IsClosingBracket(character))
                 {
-                    if (stack.Count == 0 || !AreMatchingBrackets(stack.Pop(), bracket))
+                    if (stack.Count == 0 || !AreMatchingBrackets(stack.Pop(), character))
                     {
                         return false;
                     }
@@ -29,14 +29,14 @@ namespace Serie_IV
             return stack.Count == 0;
         }
 
-        private static bool IsOpeningBracket(char bracket)
+        private static bool IsOpeningBracket(char character)
         {
-            return bracket == '(' || bracket == '[' || bracket == '{' || bracket == '<';
+            return character == '(' || character == '[' || character == '{' || character == '<';
         }
 
-        private static bool IsClosingBracket(char bracket)
+        private static bool IsClosingBracket(char character)
         {
-            return bracket == ')' || bracket == ']' || bracket == '}' || bracket == '>';
+            return character == ')' || character == ']' || character == '}' || character == '>';
         }
 
         private static bool AreMatchingBrackets(char opening, char closing)

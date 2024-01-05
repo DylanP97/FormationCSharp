@@ -34,6 +34,8 @@ namespace Serie_IV
             Console.WriteLine($"{sentence} : {m.MorseEncryption(sentence)}");
             #endregion
 
+            Console.WriteLine();
+
             #region Exercice II - Contrôle des parenthèses
             Console.WriteLine("--------------------------------------");
             Console.WriteLine("Exercice II - Contrôle des parenthèses");
@@ -51,24 +53,29 @@ namespace Serie_IV
             Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
             #endregion
 
+            Console.WriteLine();
+
             #region Exercice III - Liste des contacts téléphoniques
-            //Console.WriteLine("-----------------------------------------------");
-            //Console.WriteLine("Exercice III - Liste des contacts téléphoniques");
-            //Console.WriteLine("-----------------------------------------------");
+            Console.WriteLine("-----------------------------------------------");
+            Console.WriteLine("Exercice III - Liste des contacts téléphoniques");
+            Console.WriteLine("-----------------------------------------------");
 
-            //int numbers = 0123456789;
-            //string[] names = new string[] { "aaron", "abby", "abdul", "abe", "abel", "abigail", "abraham", "adam", "adan", "adele", "adolfo", "adolph", "adrian" };
+            int numbers = 640081205;
+            string[] names = new string[] { "aaron", "abby", "abdul", "abe", "abel", "abigail",
+                "abraham", "adam", "adan", "adele", "adolfo", "adolph", "adrian" };
 
-            //PhoneBook pb = new PhoneBook();
-            //for (int i = 0; i < names.Length; i++)
-            //{
-            //    pb.AddPhoneNumber("0" + numbers.ToString(), names[i]);
-            //    numbers++;
-            //}
-            //pb.PhoneContact("0123456789");
-            //pb.DeletePhoneNumber("0123456789");
-            //pb.DisplayPhoneBook();
+            PhoneBook pb = new PhoneBook();
+            for (int i = 0; i < names.Length; i++)
+            {
+                pb.AddPhoneNumber("0" + numbers.ToString(), names[i]);
+                numbers++;
+            }
+            pb.PhoneContact("0640081205");
+            pb.DeletePhoneNumber("0640081205");
+            pb.DisplayPhoneBook();
             #endregion
+
+            Console.WriteLine();
 
             #region Exercice IV - Emploi du temps professionnel
             //Console.WriteLine("-------------------------------------------");
