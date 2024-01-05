@@ -35,20 +35,20 @@ namespace Serie_IV
             #endregion
 
             #region Exercice II - Contrôle des parenthèses
-            //Console.WriteLine("--------------------------------------");
-            //Console.WriteLine("Exercice II - Contrôle des parenthèses");
-            //Console.WriteLine("--------------------------------------");
+            Console.WriteLine("--------------------------------------");
+            Console.WriteLine("Exercice II - Contrôle des parenthèses");
+            Console.WriteLine("--------------------------------------");
 
-            //string brackets = "()";
-            //Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
-            //brackets = "(]";
-            //Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
-            //brackets = "{[]()}";
-            //Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
-            //brackets = "{([]){((([])))}}";
-            //Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
-            //brackets = "{Azerty[uiop]qsdfg(hkl<m(wxcvb)n&é\"'(-è_çà)=}";
-            //Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
+            string brackets = "()";
+            Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
+            brackets = "(]";
+            Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
+            brackets = "{[]()}";
+            Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
+            brackets = "{([]){((([])))}}";
+            Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
+            brackets = "{Azerty[uiop]qsdfg(hkl<m(wxcvb)n&é\"'(-è_çà)=}";
+            Console.WriteLine($"{brackets} : {(BracketsControl.BracketsControls(brackets) ? "OK" : "KO")}");
             #endregion
 
             #region Exercice III - Liste des contacts téléphoniques
