@@ -51,20 +51,50 @@ namespace Serie_IV
 
         public int LettersCount(string code)
         {
-            //TODO
-            return -1;
+            string[] letters = code.Split(new[] { PointLetter }, StringSplitOptions.None);
+            Console.WriteLine("letters count : " + letters.Length);
+            return letters.Length;
         }
 
         public int WordsCount(string code)
         {
-            //TODO
-            return -1;
+            // Count the number of words in Morse code
+            string[] words = code.Split(new[] { PointWord }, StringSplitOptions.None);
+            foreach (string word in words)
+            {
+                LettersCount(word);
+            }
+            Console.WriteLine("words count : " + words.Length);
+            return words.Length;
         }
 
         public string MorseTranslation(string code)
         {
-            //TODO
-            return string.Empty;
+            string[] words = code.Split(new[] { PointWord }, StringSplitOptions.None);
+            List<string> translatedWords = new List<string>();
+
+            foreach (string word in words)
+            {
+                string[] letters = word.Split(new[] { PointLetter }, StringSplitOptions.None);
+                StringBuilder translation = new StringBuilder();
+
+                foreach (string letter in letters)
+                {
+                    if (_alphabet.TryGetValue(letter, out char translatedLetter))
+                    {
+                        translation.Append(translatedLetter);
+                    }
+                    else
+                    {
+                        // Handle unknown Morse code
+                        translation.Append('?');
+                    }
+                }
+                translatedWords.Add(translation.ToString());
+            }
+
+            string result = string.Join(" ", translatedWords);
+            return result;
         }
 
         public string EfficientMorseTranslation(string code)
@@ -75,8 +105,35 @@ namespace Serie_IV
 
         public string MorseEncryption(string sentence)
         {
-            //TODO
-            return string.Empty;
+            string space = " ";
+            string[] words = sentence.ToUpper().Split(new[] { space }, StringSplitOptions.None);
+            List<string> encryptedWords = new List<string>();
+
+            foreach (string word in words)
+            {
+                char[] letters = word.ToCharArray();
+                List<string> encryptedLetters = new List<string>();
+
+                foreach (char letter in letters)
+                {
+                    if (_alphabet.ContainsValue(letter))
+                    {
+                        string morseCode = _alphabet.First(pair => pair.Value == letter).Key;
+                        encryptedLetters.Add(morseCode);
+                    }
+                    else
+                    {
+                        // Handle unknown characters
+                        encryptedLetters.Add("?");
+                    }
+                }
+
+                string encryptedWord = string.Join(PointLetter, encryptedLetters);
+                encryptedWords.Add(encryptedWord);
+            }
+
+            string encryptedSentence = string.Join(PointWord, encryptedWords);
+            return encryptedSentence;
         }
     }
 }
