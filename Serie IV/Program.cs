@@ -89,6 +89,8 @@ namespace Serie_IV
             bs.AddBusinessMeeting(new DateTime(2021, 4, 21, 14, 30, 0), new TimeSpan(1, 0, 0));
             bs.DeleteBusinessMeeting(new DateTime(2021, 4, 21, 14, 30, 0), new TimeSpan(1, 0, 0));
             bs.DisplayMeetings();
+            bs.SetRangeOfDates(new DateTime(2021, 5, 1), new DateTime(2021, 5, 30));
+            bs.DisplayMeetings();
             #endregion
 
             // Keep the console window open

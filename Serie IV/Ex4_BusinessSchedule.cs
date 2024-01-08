@@ -17,6 +17,7 @@ namespace Serie_IV
 
         public void SetRangeOfDates(DateTime begin, DateTime end)
         {
+            Console.WriteLine("The range of dates from " + begin + " to " + end + " has been selected.");
             // You can set the range by clearing existing meetings outside the specified range
             var meetingsToRemove = schedule.Where(kv => kv.Key < begin || kv.Value > end).ToList();
             foreach (var meeting in meetingsToRemove)
@@ -85,10 +86,17 @@ namespace Serie_IV
         public void DisplayMeetings()
         {
             {
-                Console.WriteLine("Business Meetings:");
-                foreach (var meeting in schedule)
+                if (schedule.Count == 0)
                 {
-                    Console.WriteLine($"Start Time: {meeting.Key}, End Time: {meeting.Value}");
+                    Console.WriteLine("No meetings scheduled for the selected period.");
+                }
+                else
+                {
+                    Console.WriteLine("Business Meetings for the selected period:");
+                    foreach (var meeting in schedule)
+                    {
+                        Console.WriteLine($"Start Time: {meeting.Key}, End Time: {meeting.Value}");
+                    }
                 }
             }
         }
