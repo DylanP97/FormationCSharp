@@ -26,12 +26,60 @@ namespace Percolation
     {
         public PclData MeanPercolationValue(int size, int t)
         {
-            return new PclData();
+            double[] percolationValues = new double[t];
+
+            // Perform t simulations
+            for (int i = 0; i < t; i++)
+            {
+                Percolation perc = new Percolation(size);
+                Random random = new Random();
+
+                while (!perc._percolate)
+                {
+                    int randomRow = random.Next(0, size);
+                    int randomCol = random.Next(0, size);
+
+                    if (!perc.IsOpen(randomRow, randomCol))
+                    {
+                        perc.Open(randomRow, randomCol);
+                    }
+                }
+                // Store the percolation value for this simulation
+                percolationValues[i] = perc.PercolationValue();
+                Console.WriteLine($"Percolation value for this simulation: {percolationValues[i]}");
+            }
+
+            // Calculate mean, standard deviation, and fraction
+            double mean = CalculateMean(percolationValues);
+            double standardDeviation = CalculateStandardDeviation(percolationValues, mean);
+            double fraction = CalculateFraction(percolationValues, size);
+
+            Console.WriteLine($"mean is : {mean}");
+            Console.WriteLine($"standardDeviation is : {standardDeviation}");
+            Console.WriteLine($"fraction is : {fraction}");
+
+            return new PclData
+            {
+                Mean = mean,
+                StandardDeviation = standardDeviation,
+                Fraction = fraction
+            };
         }
 
-        public double PercolationValue(int size)
+        private double CalculateMean(double[] values)
         {
-            return 0;
+            return values.Sum() / values.Length;
+        }
+
+        private double CalculateStandardDeviation(double[] values, double mean)
+        {
+            double sumSquaredDifferences = values.Select(val => Math.Pow(val - mean, 2)).Sum();
+            return Math.Sqrt(sumSquaredDifferences / values.Length);
+        }
+
+        private double CalculateFraction(double[] values, int size)
+        {
+            return values.Count(val => val == 1) / (double)size;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Percolation
         private readonly bool[,] _open;
         private readonly bool[,] _full;
         private readonly int _size;
-        private bool _percolate;
+        public bool _percolate;
 
         public Percolation(int size)
         {
@@ -37,32 +37,20 @@ namespace Percolation
             return _full[i, j];
         }
 
-        public bool Percolate()
-        {
-            _percolate = false;
-
-            // Initialize the _full array for each cell in the top row
-            for (int j = 0; j < _size; j++)
-            {
-                if (_open[0, j])
-                {
-                    DepthFirstSearch(0, j);
-                }
-            }
-
-            return _percolate;
-        }
-
         private void DepthFirstSearch(int i, int j)
         {
-            if (!_percolate && !_full[i, j])
+            if (!_percolate && !_full[i, j] && _open[i, j])
             {
                 _full[i, j] = true;
+
+                // Log when a case becomes full during DFS
+                //Console.WriteLine($"Case ({i}, {j}) became full during DFS.");
 
                 if (i == _size - 1)
                 {
                     // If we reach the bottom row, set _percolate to true
                     _percolate = true;
+                    Console.WriteLine("Percolation completed!");
                 }
                 else
                 {
@@ -70,7 +58,11 @@ namespace Percolation
                     List<KeyValuePair<int, int>> neighbors = CloseNeighbors(i, j);
                     foreach (var neighbor in neighbors)
                     {
-                        DepthFirstSearch(neighbor.Key, neighbor.Value);
+                        // Check if the neighbors are open
+                        if (_open[neighbor.Key, neighbor.Value])
+                        {
+                            DepthFirstSearch(neighbor.Key, neighbor.Value);
+                        }
                     }
                 }
             }
@@ -117,8 +109,9 @@ namespace Percolation
         {
             ValidateIndices(i, j);
 
-            // Open the specified box
             _open[i, j] = true;
+
+            //Console.WriteLine($"Opened case: ({i}, {j})");
 
             // Check if the opened box is in the top row
             if (i == 0)
@@ -137,6 +130,9 @@ namespace Percolation
                     {
                         // If a full square is next to the opened box, mark it as full
                         _full[i, j] = true;
+
+                        // Log when a case becomes full
+                        //Console.WriteLine($"Case ({i}, {j}) became full.");
                         break;
                     }
                 }
@@ -156,10 +152,32 @@ namespace Percolation
 
         private void ValidateIndices(int i, int j)
         {
-            if (i < 0 || i >= _size || j < 0 || j >= _size)
+            if (i < 0 || i >= _size)
             {
                 throw new ArgumentOutOfRangeException(nameof(i), i, "Invalid row index.");
             }
+            else if (j < 0 || j >= _size)
+            {
+                throw new ArgumentOutOfRangeException(nameof(i), i, "Invalid column index.");
+            }
+        }
+
+        public double PercolationValue()
+        {
+            int openSites = 0;
+
+            for (int row = 0; row < _size; row++)
+            {
+                for (int col = 0; col < _size; col++)
+                {
+                    if (_open[row, col])
+                    {
+                        openSites++;
+                    }
+                }
+            }
+
+            return (double)openSites / (_size * _size);
         }
     }
 }
