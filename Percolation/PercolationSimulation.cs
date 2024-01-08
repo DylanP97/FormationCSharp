@@ -79,7 +79,7 @@ namespace Percolation
 
         private double CalculateFraction(double[] values, int size)
         {
-            return values.Count(val => val == 1) / (double)size;
+            return (double)values.Count(val => val == 1) / size;
         }
     }
 }

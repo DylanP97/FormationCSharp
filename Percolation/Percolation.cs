@@ -50,7 +50,7 @@ namespace Percolation
                 {
                     // If we reach the bottom row, set _percolate to true
                     _percolate = true;
-                    Console.WriteLine("Percolation completed!");
+                    //Console.WriteLine("Percolation completed!");
                 }
                 else
                 {
