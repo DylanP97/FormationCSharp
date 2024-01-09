@@ -17,43 +17,88 @@ namespace Projet_OOP_BankSystem
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine();
 
-            Console.WriteLine("Reading Input Files");
-            Console.WriteLine("-----------------------------------------------------------------------------------------");
-
-            string path = Directory.GetCurrentDirectory();
-            string bankAccountsFile = path + @"\transactions.csv";
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions.csv");
-
-            if (File.Exists(filePath))
-            {
-                ReadAndDisplayCsvFile(filePath);
-            }
-            else
-            {
-                Console.WriteLine("The CSV file does not exist.");
-            }
+            Console.WriteLine("input files");
+            Console.WriteLine();
+            string accountsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bank_accounts.csv");
+            string transactionsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions.csv");
+            Console.WriteLine("bank_accounts.csv");
+            ReadAndDisplayCsvFile(accountsFile);
+            Console.WriteLine();
+            Console.WriteLine("transactions.csv");
+            ReadAndDisplayCsvFile(transactionsFile);
 
             Console.ReadLine();
         }
 
         static void ReadAndDisplayCsvFile(string filePath)
         {
-            try
+            if (File.Exists(filePath))
             {
-                using (StreamReader reader = new StreamReader(filePath))
+                try
                 {
-                    while (!reader.EndOfStream)
+                    using (StreamReader reader = new StreamReader(filePath))
                     {
-                        string line = reader.ReadLine();
-                        Console.WriteLine(line);
+                        bool isHeader = true;
+
+                        while (!reader.EndOfStream)
+                        {
+                            string line = reader.ReadLine();
+                            string[] values = line.Split(',');
+                            Console.WriteLine(line);
+
+                            if (isHeader)
+                            {
+                                isHeader = false;
+                                continue;
+                            }
+
+                            if (filePath.Contains("bank_accounts.csv")) InstanciateAccounts(values);
+                            else if (filePath.Contains("transactions.csv")) InstanciateTransactions(values);
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine("The CSV file does not exist.");
             }
         }
 
+        static void InstanciateAccounts(string[] values)
+        {
+            if (int.TryParse(values[0], out int accountNumber) && decimal.TryParse(values[1], out decimal balance))
+            {
+                BankAccount bankAccount = new BankAccount(accountNumber, balance, 1000);
+                // Now you have a BankAccount instance, and you can use it as needed.
+            }
+            else
+            {
+                Console.WriteLine("Invalid data format in CSV values for bank_accounts.");
+            }
+        }
+
+        static void InstanciateTransactions(string[] values)
+        {
+            if (int.TryParse(values[0], out int transactionId) &&
+                decimal.TryParse(values[1], out decimal amount) &&
+                int.TryParse(values[2], out int senderAccountNumber) &&
+                int.TryParse(values[3], out int recipientAccountNumber))
+            {
+                Transaction transaction = new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
+                // Now you have a Transaction instance, and you can use it as needed.
+
+                // Example: You can store the transaction in a list or perform some processing
+                List<Transaction> transactionsList = new List<Transaction>();
+                transactionsList.Add(transaction);
+            }
+            else
+            {
+                Console.WriteLine("Invalid data format in CSV values for transactions.");
+            }
+        }
     }
 }
