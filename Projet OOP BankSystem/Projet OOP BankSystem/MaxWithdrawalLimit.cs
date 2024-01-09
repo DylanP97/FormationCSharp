@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace Projet_OOP_BankSystem
 {
-    class Program
+    class MaxWithdrawalLimit
     {
-        static void Main(string[] args)
-        {
-        }
+        public decimal LimitAmount { get; set; }
+
+
+
     }
 }
