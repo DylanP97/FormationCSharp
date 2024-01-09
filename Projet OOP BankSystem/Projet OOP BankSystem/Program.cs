@@ -19,14 +19,10 @@ namespace Projet_OOP_BankSystem
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine();
 
-            Console.WriteLine("input files");
-            Console.WriteLine();
             string accountsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bank_accounts.csv");
             string transactionsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions.csv");
-            Console.WriteLine("bank_accounts.csv");
             ReadAndDisplayCsvFile(accountsFile);
             Console.WriteLine();
-            Console.WriteLine("transactions.csv");
             ReadAndDisplayCsvFile(transactionsFile);
 
             Console.ReadLine();
@@ -109,7 +105,18 @@ namespace Projet_OOP_BankSystem
                 }
                 else
                 {
-                    Console.WriteLine("Sender or recipient account not found.");
+                    if (senderAccount == null && recipientAccount == null)
+                    {
+                        Console.WriteLine("Sender and recipient accounts not found.");
+                    }
+                    else if (senderAccount == null)
+                    {
+                        Console.WriteLine("Sender account not found.");
+                    }
+                    else // recipientAccount == null
+                    {
+                        Console.WriteLine("Recipient account not found.");
+                    }
                 }
             }
             else
