@@ -9,6 +9,8 @@ namespace Projet_OOP_BankSystem
 {
     class Program
     {
+        static List<BankAccount> accountsList = new List<BankAccount>();
+
         static void Main(string[] args)
         {
             Console.WriteLine("-----------------------------------------------------------------------------------------");
@@ -74,6 +76,7 @@ namespace Projet_OOP_BankSystem
             {
                 BankAccount bankAccount = new BankAccount(accountNumber, balance, 1000);
                 // Now you have a BankAccount instance, and you can use it as needed.
+                accountsList.Add(bankAccount);
             }
             else
             {
@@ -88,17 +91,41 @@ namespace Projet_OOP_BankSystem
                 int.TryParse(values[2], out int senderAccountNumber) &&
                 int.TryParse(values[3], out int recipientAccountNumber))
             {
-                Transaction transaction = new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
-                // Now you have a Transaction instance, and you can use it as needed.
+                BankAccount senderAccount = FindAccountByNumber(senderAccountNumber);
+                BankAccount recipientAccount = FindAccountByNumber(recipientAccountNumber);
 
-                // Example: You can store the transaction in a list or perform some processing
-                List<Transaction> transactionsList = new List<Transaction>();
-                transactionsList.Add(transaction);
+                if (senderAccount != null && recipientAccount != null)
+                {
+                    // Create a transaction
+                    Transaction transaction = new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
+
+                    // Perform the transfer
+                    senderAccount.Transfer(recipientAccount, amount);
+
+                    // Now you have a Transaction instance, and the transfer has been initiated.
+                    // You can store the transaction in a list or perform other processing if needed.
+                    List<Transaction> transactionsList = new List<Transaction>();
+                    transactionsList.Add(transaction);
+                }
+                else
+                {
+                    Console.WriteLine("Sender or recipient account not found.");
+                }
             }
             else
             {
                 Console.WriteLine("Invalid data format in CSV values for transactions.");
             }
         }
+
+        static BankAccount FindAccountByNumber(int accountNumber)
+        {
+            // Implement a method to find the account by account number
+            // You can search in the list of BankAccounts or use a different data structure.
+            // Return null if the account is not found.
+            // Example: 
+            return accountsList.Find(account => account.AccountNumber == accountNumber);
+        }
+
     }
 }
