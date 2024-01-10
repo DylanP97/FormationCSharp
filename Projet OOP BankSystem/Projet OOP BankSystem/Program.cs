@@ -30,7 +30,8 @@ namespace Projet_OOP_BankSystem
 
             Console.WriteLine();
             Console.WriteLine("-----------------------------------------------------------------------------------------");
-            //DisplayAccountsList();
+            DisplayAccountsList();
+            ReadAndDisplayCsvFile(accountsFile);
             Console.WriteLine();
             Console.ReadLine();
         }
@@ -140,7 +141,7 @@ namespace Projet_OOP_BankSystem
 
         static void DisplayAccountsList()
         {
-            Console.WriteLine("Accounts List:");
+            Console.WriteLine("Accounts List after treatment:");
             foreach (var account in accountsList)
             {
                 Console.WriteLine($"Account N°: {account.AccountNumber}, Balance: {account.GetBalance()}");
