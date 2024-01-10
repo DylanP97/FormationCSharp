@@ -17,6 +17,7 @@ namespace Projet_OOP_BankSystem
         public BankAccount(int accountNumber, decimal balance, decimal maxWithdrawalLimit)
         {
             if (accountNumber <= 0) throw new ArgumentOutOfRangeException("Account number should be a unique positive integer.");
+            if (balance < 0) throw new ArgumentOutOfRangeException("Balance should be equal or greater than 0.");
 
             AccountNumber = accountNumber;
             _balance = balance;
@@ -28,16 +29,24 @@ namespace Projet_OOP_BankSystem
 
         public void Deposit(decimal amount)
         {
-            if (amount < 0) throw new ArgumentOutOfRangeException("Un dépôt doit être positif.");
-            else _balance += amount;
+            if (amount < 0) Console.WriteLine("Un dépôt doit être positif.");
+            else
+            {
+                _balance += amount;
+                Console.WriteLine("Dépôt effectué.");
+            }
         }
 
         public void Withdraw(decimal amount)
         {
-            if (amount < 0) throw new ArgumentOutOfRangeException("Un retrait doit être positif.");
-            else if (amount > MaxWithdrawalLimit) throw new ArgumentOutOfRangeException("Un retrait doit être inférieur à la limite de retrait.");
-            else if (amount > _balance) throw new ArgumentOutOfRangeException("Un retrait doit être inférieur ou égal au solde du compte.");
-            else _balance -= amount;
+            if (amount < 0) Console.WriteLine("Un retrait doit être positif.");
+            else if (amount > MaxWithdrawalLimit) Console.WriteLine("Un retrait doit être inférieur à la limite de retrait.");
+            else if (amount > _balance) Console.WriteLine("Un retrait doit être inférieur ou égal au solde du compte.");
+            else
+            {
+                _balance -= amount;
+                Console.WriteLine("Retrait effectué.");
+            }
         }
 
         public void Transfer(BankAccount recipient, decimal amount)
@@ -49,6 +58,7 @@ namespace Projet_OOP_BankSystem
             {
                 recipient._balance += amount;
                 _balance -= amount;
+                Console.WriteLine("Transfert effectué.");
             }
         }
 

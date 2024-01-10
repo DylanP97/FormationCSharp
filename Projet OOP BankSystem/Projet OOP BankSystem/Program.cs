@@ -16,10 +16,10 @@ namespace Projet_OOP_BankSystem
             string path = Directory.GetCurrentDirectory();
             #region Files
             // Input
-            string acctPath = path + @"\Comptes_1.txt";
-            string trxnPath = path + @"\Transactions_1.txt";
+            string acctPath = path + @"\bank_accounts.csv";
+            string trxnPath = path + @"\transactions.csv";
             // Output
-            string sttsPath = path + @"\Statut_1.txt";
+            string sttsPath = path + @"\transactions_status.csv";
             #endregion
 
             Console.WriteLine("-----------------------------------------------------------------------------------------");
@@ -40,7 +40,6 @@ namespace Projet_OOP_BankSystem
             Console.WriteLine();
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             DisplayAccountsList();
-            ReadAndDisplayCsvFile(acctPath);
             Console.WriteLine();
             Console.ReadLine();
         }
@@ -58,7 +57,7 @@ namespace Projet_OOP_BankSystem
                         while (!reader.EndOfStream)
                         {
                             string line = reader.ReadLine();
-                            string[] values = line.Split(';');
+                            string[] values = line.Split(',');
                             Console.WriteLine(line);
 
                             if (isHeader)
@@ -67,8 +66,8 @@ namespace Projet_OOP_BankSystem
                                 continue;
                             }
 
-                            if (filePath.Contains("Comptes_1.txt")) InstanciateAccounts(values);
-                            else if (filePath.Contains("Transactions_1.txt")) InstanciateTransactions(values);
+                            if (filePath.Contains("bank_accounts.csv")) InstanciateAccounts(values);
+                            else if (filePath.Contains("transactions.csv")) InstanciateTransactions(values);
                         }
                     }
                 }
@@ -109,33 +108,42 @@ namespace Projet_OOP_BankSystem
 
                 string status;
 
-                if (senderAccount != null && recipientAccount != null)
+                if ((senderAccount != null || senderAccountNumber == 0) && (recipientAccount != null || recipientAccountNumber == 0))
                 {
-                    status = "ok";
-                    new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
-                    senderAccount.Transfer(recipientAccount, amount);
+                    if (amount > 0)
+                    {
+                        status = "ok";
+                        if (recipientAccountNumber == 0) senderAccount.Withdraw(amount);
+                        else if (senderAccountNumber == 0) recipientAccount.Deposit(amount);
+                        else
+                        {
+                            new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
+                            senderAccount.Transfer(recipientAccount, amount);
+                        }
+                    }
+                    else
+                    {
+                        status = "ko";
+                        Console.WriteLine("Le montant de la transaction doit être un nombre positif");
+                    }
                 }
                 else
                 {
                     status = "ko";
 
-                    if (senderAccount == null && recipientAccount == null)
+                    if (senderAccount == null)
                     {
-                        Console.WriteLine($"Sender and recipient accounts not found. Accounts n°{senderAccountNumber} & n°{recipientAccountNumber}");
+                        Console.WriteLine($"Compte expéditeur non-trouvé. Compte n°{senderAccountNumber}");
                     }
-                    else if (senderAccount == null)
+                    if (recipientAccount == null)
                     {
-                        Console.WriteLine($"Sender account not found. Account n°{senderAccountNumber}");
-                    }
-                    else // recipientAccount == null
-                    {
-                        Console.WriteLine($"Recipient account not found. Account n°{recipientAccountNumber}");
+                        Console.WriteLine($"Compte destinataire non-trouvé. Compte n°{recipientAccountNumber}");
                     }
                 }
 
                 // Create a line for the status CSV
                 string statusLine = $"{transactionId},{status}";
-                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Statut_1.txt"), Environment.NewLine + statusLine);
+                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv"), Environment.NewLine + statusLine);
             }
             else
             {
