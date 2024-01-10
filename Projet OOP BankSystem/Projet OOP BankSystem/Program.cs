@@ -17,10 +17,10 @@ namespace Projet_OOP_BankSystem
             string path = Directory.GetCurrentDirectory();
             #region Files
             // Input
-            string acctPath = path + @"\bank_accounts.csv";
-            string trxnPath = path + @"\transactions.csv";
+            string acctPath = path + @"\Comptes_1.txt";
+            string trxnPath = path + @"\Transactions_1.txt";
             // Output
-            string sttsPath = path + @"\transactions_status.csv";
+            string sttsPath = path + @"\Statut_1.txt";
             #endregion
 
             Console.WriteLine("-----------------------------------------------------------------------------------------");
@@ -29,9 +29,9 @@ namespace Projet_OOP_BankSystem
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine();
 
-            //string accountsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bank_accounts.csv");
-            //string transactionsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions.csv");
-            //string transactionsStatusFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv");
+            //string accountsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Comptes_1.txt");
+            //string transactionsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Transactions_1.txt");
+            //string transactionsStatusFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Statut_1.txt");
             ReadAndDisplayCsvFile(acctPath);
             Console.WriteLine();
             ReadAndDisplayCsvFile(trxnPath);
@@ -58,7 +58,7 @@ namespace Projet_OOP_BankSystem
                         while (!reader.EndOfStream)
                         {
                             string line = reader.ReadLine();
-                            string[] values = line.Split(',');
+                            string[] values = line.Split(';');
                             Console.WriteLine(line);
 
                             if (isHeader)
@@ -67,8 +67,8 @@ namespace Projet_OOP_BankSystem
                                 continue;
                             }
 
-                            if (filePath.Contains("bank_accounts.csv")) InstanciateAccounts(values);
-                            else if (filePath.Contains("transactions.csv")) InstanciateTransactions(values);
+                            if (filePath.Contains("Comptes_1.txt")) InstanciateAccounts(values);
+                            else if (filePath.Contains("Transactions_1.txt")) InstanciateTransactions(values);
                         }
                     }
                 }
@@ -118,7 +118,7 @@ namespace Projet_OOP_BankSystem
 
                 bool idAlreadyExists = transactionIdList.Any(id => id == transactionId);
 
-                if (!idAlreadyExists)
+                if (!idAlreadyExists && !(senderAccountNumber == 0 && recipientAccountNumber == 0))
                 {
                     if ((senderAccount != null || senderAccountNumber == 0) && (recipientAccount != null || recipientAccountNumber == 0))
                     {
@@ -159,7 +159,7 @@ namespace Projet_OOP_BankSystem
                     Console.WriteLine($"Le transactionId {transactionId} a déjà été utilisé.");
                 }
                 string statusLine = $"{transactionId};{status}";
-                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv"), Environment.NewLine + statusLine);
+                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Statut_1.txt"), Environment.NewLine + statusLine);
             }
             else
             {
