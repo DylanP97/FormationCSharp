@@ -13,25 +13,34 @@ namespace Projet_OOP_BankSystem
 
         static void Main(string[] args)
         {
+            string path = Directory.GetCurrentDirectory();
+            #region Files
+            // Input
+            string acctPath = path + @"\Comptes_1.txt";
+            string trxnPath = path + @"\Transactions_1.txt";
+            // Output
+            string sttsPath = path + @"\Statut_1.txt";
+            #endregion
+
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine("Projet OOP");
             Console.WriteLine("Banking System");
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine();
 
-            string accountsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bank_accounts.csv");
-            string transactionsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions.csv");
-            string transactionsStatusFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv");
-            ReadAndDisplayCsvFile(accountsFile);
+            //string accountsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bank_accounts.csv");
+            //string transactionsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions.csv");
+            //string transactionsStatusFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv");
+            ReadAndDisplayCsvFile(acctPath);
             Console.WriteLine();
-            ReadAndDisplayCsvFile(transactionsFile);
+            ReadAndDisplayCsvFile(trxnPath);
             Console.WriteLine();
-            ReadAndDisplayCsvFile(transactionsStatusFile);
+            ReadAndDisplayCsvFile(sttsPath);
 
             Console.WriteLine();
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             DisplayAccountsList();
-            ReadAndDisplayCsvFile(accountsFile);
+            ReadAndDisplayCsvFile(acctPath);
             Console.WriteLine();
             Console.ReadLine();
         }
@@ -49,7 +58,7 @@ namespace Projet_OOP_BankSystem
                         while (!reader.EndOfStream)
                         {
                             string line = reader.ReadLine();
-                            string[] values = line.Split(',');
+                            string[] values = line.Split(';');
                             Console.WriteLine(line);
 
                             if (isHeader)
@@ -58,8 +67,8 @@ namespace Projet_OOP_BankSystem
                                 continue;
                             }
 
-                            if (filePath.Contains("bank_accounts.csv")) InstanciateAccounts(values);
-                            else if (filePath.Contains("transactions.csv")) InstanciateTransactions(values);
+                            if (filePath.Contains("Comptes_1.txt")) InstanciateAccounts(values);
+                            else if (filePath.Contains("Transactions_1.txt")) InstanciateTransactions(values);
                         }
                     }
                 }
@@ -126,7 +135,7 @@ namespace Projet_OOP_BankSystem
 
                 // Create a line for the status CSV
                 string statusLine = $"{transactionId},{status}";
-                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv"), Environment.NewLine + statusLine);
+                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Statut_1.txt"), Environment.NewLine + statusLine);
             }
             else
             {
