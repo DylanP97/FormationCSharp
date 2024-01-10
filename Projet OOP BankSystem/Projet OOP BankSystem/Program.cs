@@ -21,10 +21,17 @@ namespace Projet_OOP_BankSystem
 
             string accountsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bank_accounts.csv");
             string transactionsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions.csv");
+            string transactionsStatusFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv");
             ReadAndDisplayCsvFile(accountsFile);
             Console.WriteLine();
             ReadAndDisplayCsvFile(transactionsFile);
+            Console.WriteLine();
+            ReadAndDisplayCsvFile(transactionsStatusFile);
 
+            Console.WriteLine();
+            Console.WriteLine("-----------------------------------------------------------------------------------------");
+            //DisplayAccountsList();
+            Console.WriteLine();
             Console.ReadLine();
         }
 
@@ -68,10 +75,10 @@ namespace Projet_OOP_BankSystem
 
         static void InstanciateAccounts(string[] values)
         {
-            if (int.TryParse(values[0], out int accountNumber) && decimal.TryParse(values[1], out decimal balance))
+            if (int.TryParse(values[0], out int accountNumber))
             {
+                decimal.TryParse(values[1], out decimal balance); // if field is empty, the balance will go to 0
                 BankAccount bankAccount = new BankAccount(accountNumber, balance, 1000);
-                // Now you have a BankAccount instance, and you can use it as needed.
                 accountsList.Add(bankAccount);
             }
             else
@@ -90,34 +97,35 @@ namespace Projet_OOP_BankSystem
                 BankAccount senderAccount = FindAccountByNumber(senderAccountNumber);
                 BankAccount recipientAccount = FindAccountByNumber(recipientAccountNumber);
 
+                string status;
+
                 if (senderAccount != null && recipientAccount != null)
                 {
-                    // Create a transaction
-                    Transaction transaction = new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
-
-                    // Perform the transfer
+                    status = "ok";
+                    new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
                     senderAccount.Transfer(recipientAccount, amount);
-
-                    // Now you have a Transaction instance, and the transfer has been initiated.
-                    // You can store the transaction in a list or perform other processing if needed.
-                    List<Transaction> transactionsList = new List<Transaction>();
-                    transactionsList.Add(transaction);
                 }
                 else
                 {
+                    status = "ko";
+
                     if (senderAccount == null && recipientAccount == null)
                     {
-                        Console.WriteLine("Sender and recipient accounts not found.");
+                        Console.WriteLine($"Sender and recipient accounts not found. Accounts n°{senderAccountNumber} & n°{recipientAccountNumber}");
                     }
                     else if (senderAccount == null)
                     {
-                        Console.WriteLine("Sender account not found.");
+                        Console.WriteLine($"Sender account not found. Account n°{senderAccountNumber}");
                     }
                     else // recipientAccount == null
                     {
-                        Console.WriteLine("Recipient account not found.");
+                        Console.WriteLine($"Recipient account not found. Account n°{recipientAccountNumber}");
                     }
                 }
+
+                // Create a line for the status CSV
+                string statusLine = $"{transactionId},{status}";
+                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv"), Environment.NewLine + statusLine);
             }
             else
             {
@@ -127,12 +135,16 @@ namespace Projet_OOP_BankSystem
 
         static BankAccount FindAccountByNumber(int accountNumber)
         {
-            // Implement a method to find the account by account number
-            // You can search in the list of BankAccounts or use a different data structure.
-            // Return null if the account is not found.
-            // Example: 
             return accountsList.Find(account => account.AccountNumber == accountNumber);
         }
 
+        static void DisplayAccountsList()
+        {
+            Console.WriteLine("Accounts List:");
+            foreach (var account in accountsList)
+            {
+                Console.WriteLine($"Account N°: {account.AccountNumber}, Balance: {account.GetBalance()}");
+            }
+        }
     }
 }

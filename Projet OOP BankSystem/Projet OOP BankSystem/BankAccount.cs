@@ -42,9 +42,9 @@ namespace Projet_OOP_BankSystem
 
         public void Transfer(BankAccount recipient, decimal amount)
         {
-            if (amount < 0) throw new ArgumentOutOfRangeException("Un virement doit être positif.");
-            else if (amount > MaxWithdrawalLimit) throw new ArgumentOutOfRangeException("Un virement doit être inférieur à la limite de retrait.");
-            else if (amount > _balance) throw new ArgumentOutOfRangeException("Un virement doit être inférieur ou égal au solde du compte.");
+            if (amount < 0) Console.WriteLine("Un virement doit être positif.");
+            else if (amount > MaxWithdrawalLimit) Console.WriteLine("Un virement doit être inférieur à la limite de retrait.");
+            else if (amount > _balance) Console.WriteLine($"Un virement doit être inférieur ou égal au solde du compte. Balance : {_balance} // Montant à retirer : {amount}");
             else
             {
                 recipient._balance += amount;
@@ -60,6 +60,11 @@ namespace Projet_OOP_BankSystem
         public void ApproveDirectDebitRequest(BankAccount requestingAccount, decimal amount)
         {
             Transfer(requestingAccount, amount);
+        }
+
+        public string GetBalance()
+        {
+            return "$ " + _balance.ToString();
         }
     }
 }
