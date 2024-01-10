@@ -10,6 +10,7 @@ namespace Projet_OOP_BankSystem
     class Program
     {
         static List<BankAccount> accountsList = new List<BankAccount>();
+        static List<int> transactionIdList = new List<int>();
 
         static void Main(string[] args)
         {
@@ -87,8 +88,15 @@ namespace Projet_OOP_BankSystem
             if (int.TryParse(values[0], out int accountNumber))
             {
                 decimal.TryParse(values[1], out decimal balance); // if field is empty, the balance will go to 0
-                BankAccount bankAccount = new BankAccount(accountNumber, balance, 1000);
-                accountsList.Add(bankAccount);
+                if (balance >= 0)
+                {
+                    BankAccount bankAccount = new BankAccount(accountNumber, balance, 1000);
+                    if (bankAccount != null) accountsList.Add(bankAccount);
+                }
+                else
+                {
+                    Console.WriteLine("La balance du compte ne peut pas être négative.");
+                }
             }
             else
             {
@@ -108,41 +116,49 @@ namespace Projet_OOP_BankSystem
 
                 string status;
 
-                if ((senderAccount != null || senderAccountNumber == 0) && (recipientAccount != null || recipientAccountNumber == 0))
+                bool idAlreadyExists = transactionIdList.Any(id => id == transactionId);
+
+                if (!idAlreadyExists)
                 {
-                    if (amount > 0)
+                    if ((senderAccount != null || senderAccountNumber == 0) && (recipientAccount != null || recipientAccountNumber == 0))
                     {
-                        status = "ok";
-                        if (recipientAccountNumber == 0) senderAccount.Withdraw(amount);
-                        else if (senderAccountNumber == 0) recipientAccount.Deposit(amount);
+                        if (amount > 0)
+                        {
+                            transactionIdList.Add(transactionId);
+                            status = "OK";
+                            if (recipientAccountNumber == 0) senderAccount.Withdraw(amount);
+                            else if (senderAccountNumber == 0) recipientAccount.Deposit(amount);
+                            else
+                            {
+                                new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
+                                senderAccount.Transfer(recipientAccount, amount);
+                            }
+                        }
                         else
                         {
-                            new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
-                            senderAccount.Transfer(recipientAccount, amount);
+                            status = "KO";
+                            Console.WriteLine("Le montant de la transaction doit être un nombre positif");
                         }
                     }
                     else
                     {
-                        status = "ko";
-                        Console.WriteLine("Le montant de la transaction doit être un nombre positif");
+                        status = "KO";
+                        if (senderAccount == null)
+                        {
+                            Console.WriteLine($"Compte expéditeur non-trouvé. Compte n°{senderAccountNumber}");
+                        }
+                        if (recipientAccount == null)
+                        {
+                            Console.WriteLine($"Compte destinataire non-trouvé. Compte n°{recipientAccountNumber}");
+                        }
                     }
                 }
                 else
                 {
-                    status = "ko";
-
-                    if (senderAccount == null)
-                    {
-                        Console.WriteLine($"Compte expéditeur non-trouvé. Compte n°{senderAccountNumber}");
-                    }
-                    if (recipientAccount == null)
-                    {
-                        Console.WriteLine($"Compte destinataire non-trouvé. Compte n°{recipientAccountNumber}");
-                    }
+                    status = "KO";
+                    Console.WriteLine($"Le transactionId {transactionId} a déjà été utilisé.");
                 }
-
-                // Create a line for the status CSV
-                string statusLine = $"{transactionId},{status}";
+                string statusLine = $"{transactionId};{status}";
                 File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv"), Environment.NewLine + statusLine);
             }
             else

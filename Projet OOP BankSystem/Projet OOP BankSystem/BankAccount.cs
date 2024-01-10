@@ -16,8 +16,16 @@ namespace Projet_OOP_BankSystem
         // Constructor
         public BankAccount(int accountNumber, decimal balance, decimal maxWithdrawalLimit)
         {
-            if (accountNumber <= 0) throw new ArgumentOutOfRangeException("Account number should be a unique positive integer.");
-            if (balance < 0) throw new ArgumentOutOfRangeException("Balance should be equal or greater than 0.");
+            if (accountNumber <= 0)
+            {
+               Console.WriteLine("Account number should be a unique positive integer.");
+               return;
+            }
+            if (balance < 0)
+            {
+                Console.WriteLine("Balance should be equal or greater than 0.");
+                return;
+            }
 
             AccountNumber = accountNumber;
             _balance = balance;
