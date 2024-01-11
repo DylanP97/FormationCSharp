@@ -14,24 +14,40 @@ namespace Projet_OOP_BankSystem
 
         static void Main(string[] args)
         {
-            string path = Directory.GetCurrentDirectory();
+            //string path = Directory.GetCurrentDirectory();
+            //for (int i = 1; i < 7; i++)
+            //{
+            //    #region Files
+            //    // Input
+            //    string mngrPath = path + $@"\Gestionnaires_{i}.txt";
+            //    string oprtPath = path + $@"\Comptes_{i}.txt";
+            //    string trxnPath = path + $@"\Transactions_{i}.txt";
+            //    // Output
+            //    string sttsOprtPath = path + $@"\StatutOpe_{i}.txt";
+            //    string sttsTrxnPath = path + $@"\StatutTra_{i}.txt";
+            //    string mtrlPath = path + $@"\Metrologie_{i}.txt";
+            //    #endregion
+
+            //    #region Main
+            //    if (File.Exists(mngrPath) && File.Exists(oprtPath) && File.Exists(trxnPath))
+            //    {
+            //        //TODO : votre code
+            //    }
+            //    #endregion
+            //}
+
             #region Files
-            // Input
-            string acctPath = path + @"\Comptes_1.txt";
-            string trxnPath = path + @"\Transactions_1.txt";
-            // Output
-            string sttsPath = path + @"\Statut_1.txt";
+            string acctPath = Directory.GetCurrentDirectory() + @"\Comptes_1.txt";
+            string trxnPath = Directory.GetCurrentDirectory() + @"\Transactions_1.txt";
+            string sttsPath = Directory.GetCurrentDirectory() + @"\transactions_status.csv";
             #endregion
 
             Console.WriteLine("-----------------------------------------------------------------------------------------");
-            Console.WriteLine("Projet OOP");
+            Console.WriteLine("Project OOP");
             Console.WriteLine("Banking System");
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine();
 
-            //string accountsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Comptes_1.txt");
-            //string transactionsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Transactions_1.txt");
-            //string transactionsStatusFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Statut_1.txt");
             ReadAndDisplayCsvFile(acctPath);
             Console.WriteLine();
             ReadAndDisplayCsvFile(trxnPath);
@@ -61,12 +77,6 @@ namespace Projet_OOP_BankSystem
                             string[] values = line.Split(';');
                             Console.WriteLine(line);
 
-                            if (isHeader)
-                            {
-                                isHeader = false;
-                                continue;
-                            }
-
                             if (filePath.Contains("Comptes_1.txt")) InstanciateAccounts(values);
                             else if (filePath.Contains("Transactions_1.txt")) InstanciateTransactions(values);
                         }
@@ -85,12 +95,20 @@ namespace Projet_OOP_BankSystem
 
         static void InstanciateAccounts(string[] values)
         {
-            if (int.TryParse(values[0], out int accountNumber))
+            int.TryParse(values[0], out int accountNumber);
+            decimal.TryParse(values[1], out decimal balance); // if field is empty, the balance will go to 0
+            bool accountNumberAlreadyExists = accountsList.Any(acc => acc.AccountNumber == accountNumber);
+
+            if (accountNumberAlreadyExists)
             {
-                decimal.TryParse(values[1], out decimal balance); // if field is empty, the balance will go to 0
+                Console.WriteLine("Le numéro de compte existe déjà.");
+            }
+            else
+            {
                 if (balance >= 0)
                 {
-                    BankAccount bankAccount = new BankAccount(accountNumber, balance, 1000);
+                    string formattedBalance = balance.ToString("0.00");
+                    BankAccount bankAccount = new BankAccount(accountNumber, decimal.Parse(formattedBalance), 1000);
                     if (bankAccount != null) accountsList.Add(bankAccount);
                 }
                 else
@@ -98,10 +116,7 @@ namespace Projet_OOP_BankSystem
                     Console.WriteLine("La balance du compte ne peut pas être négative.");
                 }
             }
-            else
-            {
-                Console.WriteLine("Invalid data format in CSV values for bank_accounts.");
-            }
+
         }
 
         static void InstanciateTransactions(string[] values)
@@ -159,7 +174,8 @@ namespace Projet_OOP_BankSystem
                     Console.WriteLine($"Le transactionId {transactionId} a déjà été utilisé.");
                 }
                 string statusLine = $"{transactionId};{status}";
-                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Statut_1.txt"), Environment.NewLine + statusLine);
+                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv"),
+                    Environment.NewLine + statusLine);
             }
             else
             {
