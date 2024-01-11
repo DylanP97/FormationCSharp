@@ -105,13 +105,12 @@ namespace Projet_OOP_BankSystem
                 BankAccount senderAccount = FindAccountByNumber(senderAccountNumber);
                 BankAccount recipientAccount = FindAccountByNumber(recipientAccountNumber);
 
-                string status;
+                string status = "KO";
 
                 bool idAlreadyExists = transactionIdList.Any(id => id == transactionId);
 
                 if (senderAccountNumber == 0 && recipientAccountNumber == 0)
                 {
-                    status = "KO";
                     Console.WriteLine("Double Zéro, erreur.");
                 }
                 else
@@ -123,24 +122,29 @@ namespace Projet_OOP_BankSystem
                             if (amount > 0)
                             {
                                 transactionIdList.Add(transactionId);
-                                status = "OK";
-                                if (recipientAccountNumber == 0) senderAccount.Withdraw(amount);
-                                else if (senderAccountNumber == 0) recipientAccount.Deposit(amount);
+                                bool res;
+                                if (recipientAccountNumber == 0)
+                                {
+                                    res = senderAccount.Withdraw(amount);
+                                }
+                                else if (senderAccountNumber == 0)
+                                {
+                                    res = recipientAccount.Deposit(amount);
+                                }
                                 else
                                 {
                                     new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
-                                    senderAccount.Transfer(recipientAccount, amount);
+                                    res = senderAccount.Transfer(recipientAccount, amount);
                                 }
+                                if (res) status = "OK";
                             }
                             else
                             {
-                                status = "KO";
                                 Console.WriteLine("Le montant de la transaction doit être un nombre positif");
                             }
                         }
                         else
                         {
-                            status = "KO";
                             if (senderAccount == null)
                             {
                                 Console.WriteLine($"Compte expéditeur non-trouvé. Compte n°{senderAccountNumber}");
@@ -153,7 +157,6 @@ namespace Projet_OOP_BankSystem
                     }
                     else
                     {
-                        status = "KO";
                         Console.WriteLine($"Le transactionId {transactionId} a déjà été utilisé.");
                     }
                 }
