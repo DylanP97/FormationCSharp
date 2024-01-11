@@ -48,8 +48,8 @@ namespace Projet_OOP_BankSystem
         public void Withdraw(decimal amount)
         {
             if (amount < 0) Console.WriteLine("Un retrait doit être positif.");
-            else if (amount > MaxWithdrawalLimit) Console.WriteLine("Un retrait doit être inférieur à la limite de retrait.");
-            else if (amount > _balance) Console.WriteLine("Un retrait doit être inférieur ou égal au solde du compte.");
+            else if (amount > MaxWithdrawalLimit) Console.WriteLine($"Un retrait doit être inférieur à la limite de retrait. Limite : {MaxWithdrawalLimit} // Montant à retirer : {amount}");
+            else if (amount > _balance) Console.WriteLine($"Un retrait doit être inférieur ou égal au solde du compte. Balance : {_balance} // Montant à retirer : {amount}");
             else
             {
                 _balance -= amount;
@@ -60,7 +60,7 @@ namespace Projet_OOP_BankSystem
         public void Transfer(BankAccount recipient, decimal amount)
         {
             if (amount < 0) Console.WriteLine("Un virement doit être positif.");
-            else if (amount > MaxWithdrawalLimit) Console.WriteLine("Un virement doit être inférieur à la limite de retrait.");
+            else if (amount > MaxWithdrawalLimit) Console.WriteLine($"Un virement doit être inférieur à la limite de retrait. Limite : {MaxWithdrawalLimit} // Montant à retirer : {amount}");
             else if (amount > _balance) Console.WriteLine($"Un virement doit être inférieur ou égal au solde du compte. Balance : {_balance} // Montant à retirer : {amount}");
             else
             {

@@ -14,32 +14,10 @@ namespace Projet_OOP_BankSystem
 
         static void Main(string[] args)
         {
-            //string path = Directory.GetCurrentDirectory();
-            //for (int i = 1; i < 7; i++)
-            //{
-            //    #region Files
-            //    // Input
-            //    string mngrPath = path + $@"\Gestionnaires_{i}.txt";
-            //    string oprtPath = path + $@"\Comptes_{i}.txt";
-            //    string trxnPath = path + $@"\Transactions_{i}.txt";
-            //    // Output
-            //    string sttsOprtPath = path + $@"\StatutOpe_{i}.txt";
-            //    string sttsTrxnPath = path + $@"\StatutTra_{i}.txt";
-            //    string mtrlPath = path + $@"\Metrologie_{i}.txt";
-            //    #endregion
-
-            //    #region Main
-            //    if (File.Exists(mngrPath) && File.Exists(oprtPath) && File.Exists(trxnPath))
-            //    {
-            //        //TODO : votre code
-            //    }
-            //    #endregion
-            //}
-
             #region Files
             string acctPath = Directory.GetCurrentDirectory() + @"\Comptes_1.txt";
             string trxnPath = Directory.GetCurrentDirectory() + @"\Transactions_1.txt";
-            string sttsPath = Directory.GetCurrentDirectory() + @"\transactions_status.csv";
+            string sttsPath = Directory.GetCurrentDirectory() + @"\Transactions_Status_1.csv";
             #endregion
 
             Console.WriteLine("-----------------------------------------------------------------------------------------");
@@ -69,8 +47,6 @@ namespace Projet_OOP_BankSystem
                 {
                     using (StreamReader reader = new StreamReader(filePath))
                     {
-                        bool isHeader = true;
-
                         while (!reader.EndOfStream)
                         {
                             string line = reader.ReadLine();
@@ -133,48 +109,56 @@ namespace Projet_OOP_BankSystem
 
                 bool idAlreadyExists = transactionIdList.Any(id => id == transactionId);
 
-                if (!idAlreadyExists && !(senderAccountNumber == 0 && recipientAccountNumber == 0))
+                if (senderAccountNumber == 0 && recipientAccountNumber == 0)
                 {
-                    if ((senderAccount != null || senderAccountNumber == 0) && (recipientAccount != null || recipientAccountNumber == 0))
+                    status = "KO";
+                    Console.WriteLine("Double Zéro, erreur.");
+                }
+                else
+                {
+                    if (!idAlreadyExists && !(senderAccountNumber == 0 && recipientAccountNumber == 0))
                     {
-                        if (amount > 0)
+                        if ((senderAccount != null || senderAccountNumber == 0) && (recipientAccount != null || recipientAccountNumber == 0))
                         {
-                            transactionIdList.Add(transactionId);
-                            status = "OK";
-                            if (recipientAccountNumber == 0) senderAccount.Withdraw(amount);
-                            else if (senderAccountNumber == 0) recipientAccount.Deposit(amount);
+                            if (amount > 0)
+                            {
+                                transactionIdList.Add(transactionId);
+                                status = "OK";
+                                if (recipientAccountNumber == 0) senderAccount.Withdraw(amount);
+                                else if (senderAccountNumber == 0) recipientAccount.Deposit(amount);
+                                else
+                                {
+                                    new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
+                                    senderAccount.Transfer(recipientAccount, amount);
+                                }
+                            }
                             else
                             {
-                                new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
-                                senderAccount.Transfer(recipientAccount, amount);
+                                status = "KO";
+                                Console.WriteLine("Le montant de la transaction doit être un nombre positif");
                             }
                         }
                         else
                         {
                             status = "KO";
-                            Console.WriteLine("Le montant de la transaction doit être un nombre positif");
+                            if (senderAccount == null)
+                            {
+                                Console.WriteLine($"Compte expéditeur non-trouvé. Compte n°{senderAccountNumber}");
+                            }
+                            if (recipientAccount == null)
+                            {
+                                Console.WriteLine($"Compte destinataire non-trouvé. Compte n°{recipientAccountNumber}");
+                            }
                         }
                     }
                     else
                     {
                         status = "KO";
-                        if (senderAccount == null)
-                        {
-                            Console.WriteLine($"Compte expéditeur non-trouvé. Compte n°{senderAccountNumber}");
-                        }
-                        if (recipientAccount == null)
-                        {
-                            Console.WriteLine($"Compte destinataire non-trouvé. Compte n°{recipientAccountNumber}");
-                        }
+                        Console.WriteLine($"Le transactionId {transactionId} a déjà été utilisé.");
                     }
                 }
-                else
-                {
-                    status = "KO";
-                    Console.WriteLine($"Le transactionId {transactionId} a déjà été utilisé.");
-                }
                 string statusLine = $"{transactionId};{status}";
-                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "transactions_status.csv"),
+                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Transactions_Status_1.csv"),
                     Environment.NewLine + statusLine);
             }
             else
