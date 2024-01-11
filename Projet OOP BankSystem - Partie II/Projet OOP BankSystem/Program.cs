@@ -9,179 +9,229 @@ namespace Projet_OOP_BankSystem
 {
     class Program
     {
-        static List<BankAccount> accountsList = new List<BankAccount>();
-        static List<int> transactionIdList = new List<int>();
-
         static void Main(string[] args)
         {
-            #region Files
-            string acctPath = Directory.GetCurrentDirectory() + @"\Comptes_1.txt";
-            string trxnPath = Directory.GetCurrentDirectory() + @"\Transactions_1.txt";
-            string sttsPath = Directory.GetCurrentDirectory() + @"\Transactions_Status_1.csv";
-            #endregion
-
+            #region Entête
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine("Project OOP");
             Console.WriteLine("Banking System");
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine();
+            #endregion
 
-            ReadAndDisplayCsvFile(acctPath);
-            Console.WriteLine();
-            ReadAndDisplayCsvFile(trxnPath);
-            Console.WriteLine();
-            ReadAndDisplayCsvFile(sttsPath);
-
-            Console.WriteLine();
-            Console.WriteLine("-----------------------------------------------------------------------------------------");
-            DisplayAccountsList();
-            Console.WriteLine();
-            Console.ReadLine();
-        }
-
-        static void ReadAndDisplayCsvFile(string filePath)
-        {
-            if (File.Exists(filePath))
+            for (int i = 1; i < 7; i++)
             {
-                try
-                {
-                    using (StreamReader reader = new StreamReader(filePath))
-                    {
-                        while (!reader.EndOfStream)
-                        {
-                            string line = reader.ReadLine();
-                            string[] values = line.Split(';');
-                            Console.WriteLine(line);
+                #region Files
+                // Input
+                string mngrPath = Directory.GetCurrentDirectory() + $@"\Gestionnaires_{i}.txt";
+                string oprtPath = Directory.GetCurrentDirectory() + $@"\Comptes_{i}.txt";
+                string trxnPath = Directory.GetCurrentDirectory() + $@"\Transactions_{i}.txt";
+                // Output
+                string sttsOprtPath = Directory.GetCurrentDirectory() + $@"\StatutOpe_{i}.txt";
+                string sttsTrxnPath = Directory.GetCurrentDirectory() + $@"\StatutTra_{i}.txt";
+                string mtrlPath = Directory.GetCurrentDirectory() + $@"\Metrologie_{i}.txt";
+                #endregion
 
-                            if (filePath.Contains("Comptes_1.txt")) InstanciateAccounts(values);
-                            else if (filePath.Contains("Transactions_1.txt")) InstanciateTransactions(values);
-                        }
+                #region Main
+                if (File.Exists(mngrPath) && File.Exists(oprtPath) && File.Exists(trxnPath))
+                {
+                    //TODO : votre code
+                    List<AccountManager> accountManagersList = new List<AccountManager>();
+                    List<string[]> operationsList = new List<string[]>;
+                    List<BankAccount> bankAccountsList = new List<BankAccount>();
+                    List<int> transactionIdList = new List<int>();
+
+                    ReadInputFile(oprtPath);
+                    Console.WriteLine();
+                    ReadInputFile(trxnPath);
+                    Console.WriteLine();
+                    ReadInputFile(mngrPath);
+
+                    // ici nous convertissons le string du champ date en DateTime et nous l'utilisons ensuite pour trier la liste
+                    operationsList = operationsList.OrderBy(arr => DateTime.Parse(arr[1])).ToList();
+
+                    TreatOperations(operationsList);
+
+                    Console.ReadLine();
+
+                    /***********************************************************************************************************************/
+
+                    void TreatOperations(List<string[]> listOpe)
+                    {
+                        // lire la liste d'opérations puis exécuter TreatBankAccountLine() ou TreatTransactionLine() selon la ligne
                     }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("The CSV file does not exist.");
-            }
-        }
 
-        static void InstanciateAccounts(string[] values)
-        {
-            int.TryParse(values[0], out int accountNumber);
-            decimal.TryParse(values[1], out decimal balance); // if field is empty, the balance will go to 0
-            bool accountNumberAlreadyExists = accountsList.Any(acc => acc.AccountNumber == accountNumber);
-
-            if (accountNumberAlreadyExists)
-            {
-                Console.WriteLine("Le numéro de compte existe déjà.");
-            }
-            else
-            {
-                if (balance >= 0)
-                {
-                    string formattedBalance = balance.ToString("0.00");
-                    BankAccount bankAccount = new BankAccount(accountNumber, decimal.Parse(formattedBalance), 1000);
-                    if (bankAccount != null) accountsList.Add(bankAccount);
-                }
-                else
-                {
-                    Console.WriteLine("La balance du compte ne peut pas être négative.");
-                }
-            }
-
-        }
-
-        static void InstanciateTransactions(string[] values)
-        {
-            if (int.TryParse(values[0], out int transactionId) &&
-                decimal.TryParse(values[1], out decimal amount) &&
-                int.TryParse(values[2], out int senderAccountNumber) &&
-                int.TryParse(values[3], out int recipientAccountNumber))
-            {
-                BankAccount senderAccount = FindAccountByNumber(senderAccountNumber);
-                BankAccount recipientAccount = FindAccountByNumber(recipientAccountNumber);
-
-                string status = "KO";
-
-                bool idAlreadyExists = transactionIdList.Any(id => id == transactionId);
-
-                if (senderAccountNumber == 0 && recipientAccountNumber == 0)
-                {
-                    Console.WriteLine("Double Zéro, erreur.");
-                }
-                else
-                {
-                    if (!idAlreadyExists && !(senderAccountNumber == 0 && recipientAccountNumber == 0))
+                    void TreatBankAccountLine(string[] values)
                     {
-                        if ((senderAccount != null || senderAccountNumber == 0) && (recipientAccount != null || recipientAccountNumber == 0))
+                        int bankAccNbr = int.Parse(values[0]);
+                        DateTime dateOpe = DateTime.Parse(values[1]);
+                        decimal balance = decimal.Parse(values[2]);
+                        int entry = int.Parse(values[3]);
+                        int exit = int.Parse(values[4]);
+
+                        bool accountNumberAlreadyExists = bankAccountsList.Any(acc => acc.AccountNumber == bankAccNbr);
+
+                        if (accountNumberAlreadyExists)
                         {
-                            if (amount > 0)
+                            Console.WriteLine("Le numéro de compte existe déjà.");
+                        }
+                        else
+                        {
+                            if (balance >= 0)
                             {
-                                transactionIdList.Add(transactionId);
-                                bool res;
-                                if (recipientAccountNumber == 0)
-                                {
-                                    res = senderAccount.Withdraw(amount);
-                                }
-                                else if (senderAccountNumber == 0)
-                                {
-                                    res = recipientAccount.Deposit(amount);
-                                }
-                                else
-                                {
-                                    new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
-                                    res = senderAccount.Transfer(recipientAccount, amount);
-                                }
-                                if (res) status = "OK";
+                                CreateBankAccount
+                                BankAccount bankAccount = new BankAccount(accountNumber, decimal.Parse(formattedBalance), 1000);
+                                if (bankAccount != null) bankAccountsList.Add(bankAccount);
                             }
                             else
                             {
-                                Console.WriteLine("Le montant de la transaction doit être un nombre positif");
+                                Console.WriteLine("La balance du compte ne peut pas être négative.");
+                            }
+                        }
+
+                    }
+
+                    void TreatTransactionLine(string[] values)
+                    {
+                        if (int.TryParse(values[0], out int transactionId) &&
+                            decimal.TryParse(values[1], out decimal amount) &&
+                            int.TryParse(values[2], out int senderAccountNumber) &&
+                            int.TryParse(values[3], out int recipientAccountNumber))
+                        {
+                            BankAccount senderAccount = FindAccountByNumber(senderAccountNumber);
+                            BankAccount recipientAccount = FindAccountByNumber(recipientAccountNumber);
+
+                            string status = "KO";
+
+                            bool idAlreadyExists = transactionIdList.Any(id => id == transactionId);
+
+                            if (senderAccountNumber == 0 && recipientAccountNumber == 0)
+                            {
+                                Console.WriteLine("Double Zéro, erreur.");
+                            }
+                            else
+                            {
+                                if (!idAlreadyExists && !(senderAccountNumber == 0 && recipientAccountNumber == 0))
+                                {
+                                    if ((senderAccount != null || senderAccountNumber == 0) && (recipientAccount != null || recipientAccountNumber == 0))
+                                    {
+                                        if (amount > 0)
+                                        {
+                                            transactionIdList.Add(transactionId);
+                                            bool res;
+                                            if (recipientAccountNumber == 0)
+                                            {
+                                                res = senderAccount.Withdraw(amount);
+                                            }
+                                            else if (senderAccountNumber == 0)
+                                            {
+                                                res = recipientAccount.Deposit(amount);
+                                            }
+                                            else
+                                            {
+                                                new Transaction(transactionId, amount, senderAccountNumber, recipientAccountNumber);
+                                                res = senderAccount.Transfer(recipientAccount, amount);
+                                            }
+                                            if (res) status = "OK";
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Le montant de la transaction doit être un nombre positif");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (senderAccount == null)
+                                        {
+                                            Console.WriteLine($"Compte expéditeur non-trouvé. Compte n°{senderAccountNumber}");
+                                        }
+                                        if (recipientAccount == null)
+                                        {
+                                            Console.WriteLine($"Compte destinataire non-trouvé. Compte n°{recipientAccountNumber}");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Le transactionId {transactionId} a déjà été utilisé.");
+                                }
+                            }
+                            string statusLine = $"{transactionId};{status}";
+                            File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Transactions_Status_1.csv"),
+                                Environment.NewLine + statusLine);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid data format in CSV values for transactions.");
+                        }
+                    }
+
+                    void TreatAccountManagerLine(string[] values)
+                    {
+                        int accId = int.Parse(values[0]);
+                        string cType = values[1];
+                        int trCount = int.Parse(values[2]);
+
+                        AccountManager accMng = new AccountManager(accId, cType, trCount);
+                        accountManagersList.Add(accMng);
+                    }
+
+                    void ReadInputFile(string filePath)
+                    {
+                        if (File.Exists(filePath))
+                        {
+                            try
+                            {
+                                Console.WriteLine(filePath + " :");
+                                Console.WriteLine();
+                                using (StreamReader reader = new StreamReader(filePath))
+                                {
+                                    while (!reader.EndOfStream)
+                                    {
+                                        string line = reader.ReadLine();
+                                        string[] values = line.Split(';');
+                                        Console.WriteLine(line);
+
+                                        if (filePath.Contains("Gestionnaires")) TreatAccountManagerLine(values);
+
+                                        if (filePath.Contains("Comptes") || filePath.Contains("Transactions"))
+                                        {
+                                            operationsList.Add(values);
+                                        }                                            
+                                        //TreatBankAccountLine(values);
+                                        //TreatTransactionLine(values);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"An error occurred: {ex.Message}");
                             }
                         }
                         else
                         {
-                            if (senderAccount == null)
-                            {
-                                Console.WriteLine($"Compte expéditeur non-trouvé. Compte n°{senderAccountNumber}");
-                            }
-                            if (recipientAccount == null)
-                            {
-                                Console.WriteLine($"Compte destinataire non-trouvé. Compte n°{recipientAccountNumber}");
-                            }
+                            Console.WriteLine("The file does not exist.");
                         }
                     }
-                    else
+
+                    BankAccount FindAccountByNumber(int accountNumber)
                     {
-                        Console.WriteLine($"Le transactionId {transactionId} a déjà été utilisé.");
+                        return bankAccountsList.Find(account => account.AccountNumber == accountNumber);
+                    }
+
+                    void DisplayAccountsList()
+                    {
+                        Console.WriteLine("Accounts List after treatment:");
+                        foreach (var account in bankAccountsList)
+                        {
+                            Console.WriteLine($"Account N°: {account.AccountNumber}, Balance: {account.GetBalance()}");
+                        }
                     }
                 }
-                string statusLine = $"{transactionId};{status}";
-                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Transactions_Status_1.csv"),
-                    Environment.NewLine + statusLine);
+                #endregion
             }
-            else
-            {
-                Console.WriteLine("Invalid data format in CSV values for transactions.");
-            }
+
         }
 
-        static BankAccount FindAccountByNumber(int accountNumber)
-        {
-            return accountsList.Find(account => account.AccountNumber == accountNumber);
-        }
-
-        static void DisplayAccountsList()
-        {
-            Console.WriteLine("Accounts List after treatment:");
-            foreach (var account in accountsList)
-            {
-                Console.WriteLine($"Account N°: {account.AccountNumber}, Balance: {account.GetBalance()}");
-            }
-        }
     }
 }

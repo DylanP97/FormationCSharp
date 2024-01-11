@@ -34,6 +34,7 @@ namespace Projet_OOP_BankSystem
             _balance = balance;
             MaxWithdrawalLimit = maxWithdrawalLimit;
             TransactionsHistory = new List<Transaction>();
+            //CreationDate = creationDate;
         }
 
         // pour chaque méthodes mettre à jour le TransactionsHistory
