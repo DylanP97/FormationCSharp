@@ -27,8 +27,8 @@ namespace Projet_OOP_BankSystem
                 string oprtPath = Directory.GetCurrentDirectory() + $@"\Comptes_{i}.txt";
                 string trxnPath = Directory.GetCurrentDirectory() + $@"\Transactions_{i}.txt";
                 // Output
-                string sttsOprtPath = Directory.GetCurrentDirectory() + $@"\StatutOpe_{i}.txt";
-                string sttsTrxnPath = Directory.GetCurrentDirectory() + $@"\StatutTra_{i}.txt";
+                string sttsOprtPath = Directory.GetCurrentDirectory() + $@"\StatutOpe_{i}.csv";
+                string sttsTrxnPath = Directory.GetCurrentDirectory() + $@"\StatutTra_{i}.csv";
                 string mtrlPath = Directory.GetCurrentDirectory() + $@"\Metrologie_{i}.txt";
                 #endregion
 
@@ -40,7 +40,7 @@ namespace Projet_OOP_BankSystem
                     List<string[]> operationsList = new List<string[]>();
                     List<BankAccount> bankAccountsList = new List<BankAccount>();
                     List<int> transactionIdList = new List<int>();
-                    decimal totalAmountOKTransactions = 0M;
+                    decimal totalAmountTransactionsOK = 0M;
 
                     ReadInputFile(mngrPath);
                     Console.WriteLine();
@@ -53,9 +53,11 @@ namespace Projet_OOP_BankSystem
                     operationsList = operationsList.OrderBy(arr => DateTime.Parse(arr[1])).ToList();
                     TreatOperations(operationsList);
 
-                    Console.WriteLine("----------- Résultats des comptes bancaires après traitement.");
+                    Console.WriteLine("----------- État des comptes bancaires après traitement :");
                     Console.WriteLine();
                     DisplayAccountsList();
+
+                    WriteStatisticsFile();
 
                     Console.ReadLine();
 
@@ -89,12 +91,6 @@ namespace Projet_OOP_BankSystem
 
                     void TreatBankAccountLine(string[] values)
                     {
-                        //Console.WriteLine("values[0] : " + values[0]);
-                        //Console.WriteLine("values[1] : " + values[1]);
-                        //Console.WriteLine("values[2] : " + values[2]);
-                        //Console.WriteLine("values[3] : " + values[3]);
-                        //Console.WriteLine("values[4] : " + values[4]);
-                        //Console.WriteLine("values[5] : " + values[5]);
                         //Console.WriteLine(values[0] + " " + values[1] + " " + values[2] + " " + values[3] + " " + values[4] + " " + values[5]);
 
                         int bankAccNbr = int.Parse(values[0]);
@@ -103,8 +99,10 @@ namespace Projet_OOP_BankSystem
                         int.TryParse(values[3], out int entry);
                         int.TryParse(values[4], out int exit);
 
+                        string status = "KO";
+
                         #region Création, Suppression ou Transfert de Compte Bancaire
-                        if (entry > 0 && exit == 0) 
+                        if (entry > 0 && exit == 0) // création 
                         {
                             bool accountNumberAlreadyExists = bankAccountsList.Any(acc => acc.AccountNumber == bankAccNbr);
 
@@ -126,7 +124,8 @@ namespace Projet_OOP_BankSystem
                                     if (newlyCreatedBankAcc != null)
                                     {
                                         bankAccountsList.Add(newlyCreatedBankAcc);
-                                        Console.WriteLine($"Creation de compte bancaire {bankAccNbr} chez le gestionnaire n°{entry}.");
+                                        Console.WriteLine($"Creation du compte bancaire n°{bankAccNbr} chez le gestionnaire n°{entry}.");
+                                        status = "OK";
                                     }
                                 }
                                 else
@@ -135,7 +134,7 @@ namespace Projet_OOP_BankSystem
                                 }
                             }
                         }
-                        else if (entry == 0 && exit > 0)
+                        else if (entry == 0 && exit > 0) // suppression
                         {
                             AccountManager exitAccManager = FindAccountManagerByNumber(exit);
                             if (exitAccManager != null)
@@ -143,7 +142,8 @@ namespace Projet_OOP_BankSystem
                                 BankAccount bankAccToDelete = FindBankAccountByNumber(bankAccNbr);
                                 if (bankAccToDelete != null)
                                 {
-                                    exitAccManager.TerminateBankAccount(bankAccNbr);
+                                    bool res = exitAccManager.TerminateBankAccount(bankAccNbr);
+                                    if (res) status = "OK";
                                 }
                                 else
                                 {
@@ -155,14 +155,15 @@ namespace Projet_OOP_BankSystem
                                 Console.WriteLine($"Le gestionnaire de comptes n°{exit} n'existe pas. Il nous est impossible de supprimé le compte bancaire n°{bankAccNbr}");
                             }
                         }
-                        else if (entry > 0 && exit > 0)
+                        else if (entry > 0 && exit > 0) // changement de gestionnaire
                         {
                             AccountManager entryAccManager = FindAccountManagerByNumber(entry);
                             AccountManager exitAccManager = FindAccountManagerByNumber(exit);
 
                             if (entryAccManager != null || exitAccManager != null)
                             {
-                                entryAccManager.InitiateTransferBankAccountOwnershipRequest(exitAccManager, bankAccNbr);
+                                bool res = entryAccManager.InitiateTransferBankAccountOwnershipRequest(exitAccManager, bankAccNbr);
+                                if (res) status = "OK";
                             }
                         }
                         else
@@ -170,6 +171,9 @@ namespace Projet_OOP_BankSystem
                             Console.WriteLine($"Erreur Entry Exit : {entry} / {exit}");
                         }
                         #endregion
+
+                        string statusLine = $"{bankAccNbr};{status}";
+                        File.AppendAllText(sttsOprtPath, Environment.NewLine + statusLine);
                     }
 
                     void TreatTransactionLine(string[] values)
@@ -218,7 +222,7 @@ namespace Projet_OOP_BankSystem
                                         }
                                         if (res)
                                         {
-                                            ++totalAmountOKTransactions;
+                                            ++totalAmountTransactionsOK;
                                             status = "OK";
                                         }       
                                     }
@@ -243,9 +247,9 @@ namespace Projet_OOP_BankSystem
                                 Console.WriteLine($"Le transactionId {transactionId} a déjà été utilisé pour une précédente transaction.");
                             }
                         }
+
                         string statusLine = $"{transactionId};{status}";
-                        File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Transactions_Status_1.csv"),
-                            Environment.NewLine + statusLine);
+                        File.AppendAllText(sttsTrxnPath, Environment.NewLine + statusLine);
                     }
 
                     void TreatAccountManagerLine(string[] values)
@@ -324,6 +328,18 @@ namespace Projet_OOP_BankSystem
                         {
                             Console.WriteLine($"Compte n°{account.AccountNumber}, Solde: {account.GetBalance()}");
                         }
+                    }
+
+                    void WriteStatisticsFile()
+                    {
+                        Console.WriteLine("Statistiques :");
+                        Console.WriteLine($"Nombre de comptes : {bankAccountsList.Count}");
+                        //Console.WriteLine($"Nombre de transactions : {}");
+                        Console.WriteLine($"Nombre de réussites : ");
+                        Console.WriteLine($"Nombre d'échecs : ");
+                        //Console.WriteLine($"Montant total des réussites : { } euros");
+                        //Console.WriteLine($"Frais de gestions :");
+                        //Console.WriteLine($"Identifiant gestionnaire : { } euros");
                     }
                 }
                 #endregion
