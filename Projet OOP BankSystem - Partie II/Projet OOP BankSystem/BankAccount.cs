@@ -21,12 +21,12 @@ namespace Projet_OOP_BankSystem
         {
             if (accountNumber <= 0)
             {
-               Console.WriteLine("Account number should be a unique positive integer.");
+               Console.WriteLine("Le numéro du compte bancaire doit être un nombre positif.");
                return;
             }
             if (balance < 0)
             {
-                Console.WriteLine("Balance should be equal or greater than 0.");
+                Console.WriteLine("Le solde doit être égal ou supérieur à 0.");
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace Projet_OOP_BankSystem
             else
             {
                 _balance += amount;
-                Console.WriteLine("Dépôt effectué.");
+                Console.WriteLine($"Dépôt de {amount} euros effectué vers le compte n°{AccountNumber}.");
                 return true;
             }
         }
@@ -74,7 +74,7 @@ namespace Projet_OOP_BankSystem
             else
             {
                 _balance -= amount;
-                Console.WriteLine("Retrait effectué.");
+                Console.WriteLine($"Retrait de {amount} euros effectué depuis le compte n°{AccountNumber}.");
                 return true;
             }
         }
@@ -100,7 +100,7 @@ namespace Projet_OOP_BankSystem
             {
                 recipient._balance += amount;
                 _balance -= amount;
-                Console.WriteLine("Transfert effectué.");
+                Console.WriteLine($"Transfert de {amount} euros effectué depuis le compte n°{AccountNumber} vers le compte n°{recipient.AccountNumber}");
                 return true;
             }
         }
@@ -117,7 +117,7 @@ namespace Projet_OOP_BankSystem
 
         public string GetBalance()
         {
-            return "$ " + _balance.ToString();
+            return _balance.ToString() + " euros";
         }
     }
 }

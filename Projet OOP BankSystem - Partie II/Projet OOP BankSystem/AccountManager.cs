@@ -21,6 +21,7 @@ namespace Projet_OOP_BankSystem
             ClientType = cType;
             TransactionsCount = trCount;
             ManagementFees = CalculateManagementFees(cType);
+            AffiliatedBankAccounts = new List<BankAccount>();
         }
 
         public decimal CalculateManagementFees(string clientType)
@@ -30,49 +31,57 @@ namespace Projet_OOP_BankSystem
             else return 0.00M;
         }
 
-        public void CreateBankAccount(int bankAccNbr, decimal initialBalance)
+        public BankAccount CreateBankAccount(int bankAccNbr, decimal initialBalance)
         {
-            bool exist = AffiliatedBankAccounts.Any(acc => acc.AccountNumber == bankAccNbr);
-
-            if (!exist)
+            BankAccount accExisting = AffiliatedBankAccounts.Find(acc => acc.AccountNumber == bankAccNbr);
+            if (accExisting == null)
             {
-                BankAccount newAcc = new BankAccount(bankAccNbr, decimal.Parse(initialBalance), 1000);
+                BankAccount newAcc = new BankAccount(bankAccNbr, initialBalance, 1000);
                 AffiliatedBankAccounts.Add(newAcc);
+                return newAcc;
             }
             else
             {
-                Console.WriteLine($"Ce compte n°{bankAccNbr} existe déjà !");
+                Console.WriteLine($"Le compte bancaire n°{bankAccNbr} existe déjà chez le gestionnaire {AccManagerId}! Création de compte bancaire avortée");
+                return null;
             }
         }
 
         public void TerminateBankAccount(int bankAccNbr)
         {
-            bool exist;
-            // find if account already existe 
+            bool exist = AffiliatedBankAccounts.Any(acc => acc.AccountNumber == bankAccNbr);
 
             if (exist)
             {
-                // delete bank account
+                BankAccount accToDelete = AffiliatedBankAccounts.Find(acc => acc.AccountNumber == bankAccNbr);
+                AffiliatedBankAccounts.Remove(accToDelete);
+                Console.WriteLine($"Le compte {bankAccNbr} a été supprimé avec succès.");
             }
             else
             {
-                Console.WriteLine($"Le compte {bankAccNbr} n'existe pas.");
+                Console.WriteLine($"Le compte {bankAccNbr} n'est pas affilié au gestionnaire de compte n°{AccManagerId}.");
             }
         }
 
         public void InitiateTransferBankAccountOwnershipRequest(AccountManager targetNewOwner, int targetBankAccNbr)
         {
             List<BankAccount> newOwnerBankAccounts = targetNewOwner.AffiliatedBankAccounts;
-            bool exist = newOwnerBankAccounts.Any(acc => acc.AccountNumber == targetBankAccNbr);
+            newOwnerBankAccounts.Any(acc => acc.AccountNumber == targetBankAccNbr);
             BankAccount targetedBankAcc = newOwnerBankAccounts.Find(acc => acc.AccountNumber == targetBankAccNbr);
-
-            if (exist) targetNewOwner.ApproveTransferBankAccountOwnershipRequest(targetedBankAcc);
-            else Console.WriteLine($"Le client {targetNewOwner.AccManagerId} n'a pas de compte bancaire avec le n°{targetBankAccNbr}.");
+            if (targetedBankAcc != null)
+            {
+                targetNewOwner.ApproveTransferBankAccountOwnershipRequest(targetedBankAcc); 
+            }
+            else
+            {
+                Console.WriteLine($"Le client {targetNewOwner.AccManagerId} n'a pas de compte bancaire n°{targetBankAccNbr}. Changement de gestionnaire avorté.");
+            }
         }
 
         public void ApproveTransferBankAccountOwnershipRequest(BankAccount targetedBankAcc)
         {
             targetedBankAcc.AccountNumber = AccManagerId;
+            Console.WriteLine($"Transfert de gestionnaire effectué! Le gestionnaire {AccManagerId} est le nouveau propriétaire du compte n°{targetedBankAcc.AccountNumber}");
         }
     }
 
