@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,12 +17,19 @@ namespace Projet_OOP_BankSystem
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine("Project OOP");
             Console.WriteLine("Banking System");
+            Console.WriteLine("Dylan Pinheiro");
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine();
             #endregion
 
             for (int i = 1; i < 7; i++)
             {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------------------------------------");
+                Console.WriteLine($"------------ Set of Files Tests n°{i}");
+                Console.WriteLine("-----------------------------------------------------------------------------------------");
+                Console.WriteLine();
+
                 #region Files
                 // Input
                 string mngrPath = Directory.GetCurrentDirectory() + $@"\Gestionnaires_{i}.txt";
@@ -40,6 +49,8 @@ namespace Projet_OOP_BankSystem
                     List<string[]> operationsList = new List<string[]>();
                     List<BankAccount> bankAccountsList = new List<BankAccount>();
                     List<int> transactionIdList = new List<int>();
+                    int nbrTransactionsOK = 0;
+                    int nbrTransactionsKO = 0;
                     decimal totalAmountTransactionsOK = 0M;
 
                     ReadInputFile(mngrPath);
@@ -49,17 +60,24 @@ namespace Projet_OOP_BankSystem
                     ReadInputFile(trxnPath);
                     Console.WriteLine();
 
+
                     // la ligne suivante convertie le string du champ date en DateTime et nous l'utilisons ensuite pour trier la liste
-                    operationsList = operationsList.OrderBy(arr => DateTime.Parse(arr[1])).ToList();
+                    // il faut être sûr aussi de parser la date dans le format "fr-FR" dd/MM/yyyy pour ne pas se retrouver
+                    // avec des erreurs si il y a un changement de poste où la région du système est "en-US" par exemple
+                    operationsList = operationsList.OrderBy(arr => DateTime.ParseExact(arr[1], "dd/MM/yyyy", CultureInfo.GetCultureInfo("fr-FR"))).ToList();
                     TreatOperations(operationsList);
 
                     Console.WriteLine("----------- État des comptes bancaires après traitement :");
                     Console.WriteLine();
                     DisplayAccountsList();
+                    Console.WriteLine();
 
+                    Console.WriteLine("----------- Statistiques résulats et frais de gestion :");
+                    Console.WriteLine();
                     WriteStatisticsFile();
-
-                    Console.ReadLine();
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine();
 
                     /***********************************************************************************************************************/
 
@@ -92,9 +110,10 @@ namespace Projet_OOP_BankSystem
                     void TreatBankAccountLine(string[] values)
                     {
                         //Console.WriteLine(values[0] + " " + values[1] + " " + values[2] + " " + values[3] + " " + values[4] + " " + values[5]);
+                        Console.WriteLine(values[1]);
 
                         int bankAccNbr = int.Parse(values[0]);
-                        DateTime dateOpe = DateTime.Parse(values[1]);
+                        DateTime dateOpe = DateTime.ParseExact(values[1], "dd/MM/yyyy", CultureInfo.GetCultureInfo("fr-FR"));
                         decimal.TryParse(values[2], out decimal balance);
                         int.TryParse(values[3], out int entry);
                         int.TryParse(values[4], out int exit);
@@ -143,7 +162,11 @@ namespace Projet_OOP_BankSystem
                                 if (bankAccToDelete != null)
                                 {
                                     bool res = exitAccManager.TerminateBankAccount(bankAccNbr);
-                                    if (res) status = "OK";
+                                    if (res)
+                                    {
+                                        status = "OK";
+                                        bankAccountsList.Remove(bankAccountsList.Find(acc => acc.AccountNumber == bankAccNbr));
+                                    }
                                 }
                                 else
                                 {
@@ -180,8 +203,9 @@ namespace Projet_OOP_BankSystem
                     {
                         //Console.WriteLine(values[0] + " " + values[1] + " " + values[2] + " " + values[3] + " " + values[4] + " " + values[5]);
 
+                        Console.WriteLine(values[1]);
                         int transactionId = int.Parse(values[0]);
-                        DateTime dateEff = DateTime.Parse(values[1]);
+                        DateTime dateEff = DateTime.ParseExact(values[1], "dd/MM/yyyy", CultureInfo.GetCultureInfo("fr-FR"));
                         decimal.TryParse(values[2], out decimal amount);
                         int.TryParse(values[3], out int senderBkAccNumber);
                         int.TryParse(values[4], out int recipientBkAccNumber);
@@ -222,7 +246,8 @@ namespace Projet_OOP_BankSystem
                                         }
                                         if (res)
                                         {
-                                            ++totalAmountTransactionsOK;
+                                            totalAmountTransactionsOK += amount;
+                                            nbrTransactionsOK += 1;
                                             status = "OK";
                                         }       
                                     }
@@ -247,6 +272,8 @@ namespace Projet_OOP_BankSystem
                                 Console.WriteLine($"Le transactionId {transactionId} a déjà été utilisé pour une précédente transaction.");
                             }
                         }
+
+                        if (status == "KO") nbrTransactionsKO += 1;
 
                         string statusLine = $"{transactionId};{status}";
                         File.AppendAllText(sttsTrxnPath, Environment.NewLine + statusLine);
@@ -332,19 +359,32 @@ namespace Projet_OOP_BankSystem
 
                     void WriteStatisticsFile()
                     {
-                        Console.WriteLine("Statistiques :");
-                        Console.WriteLine($"Nombre de comptes : {bankAccountsList.Count}");
-                        //Console.WriteLine($"Nombre de transactions : {}");
-                        Console.WriteLine($"Nombre de réussites : ");
-                        Console.WriteLine($"Nombre d'échecs : ");
-                        //Console.WriteLine($"Montant total des réussites : { } euros");
-                        //Console.WriteLine($"Frais de gestions :");
-                        //Console.WriteLine($"Identifiant gestionnaire : { } euros");
+                        List<string> lines = new List<string>
+                        {
+                            $"Statistiques :",
+                            $"Nombre de comptes : {bankAccountsList.Count}",
+                            $"Nombre de transactions : {transactionIdList.Count}",
+                            $"Nombre de réussites : {nbrTransactionsOK}",
+                            $"Nombre d'échecs : {nbrTransactionsKO} ",
+                            $"Montant total des réussites : {totalAmountTransactionsOK} euros",
+                            "",
+                            $"Frais de gestions :",
+                            // Add other lines as needed
+                            //$"Identifiant gestionnaire : {} euros"
+                        };
+
+                        foreach (string line in lines)
+                        {
+                            Console.WriteLine(line);
+                            File.AppendAllText(mtrlPath, Environment.NewLine + line);
+                        }
                     }
+
                 }
                 #endregion
             }
 
+            Console.ReadLine();
         }
 
     }

@@ -11,7 +11,7 @@ namespace Projet_OOP_BankSystem
         public int AccManagerId { get; set; }
         public string ClientType { get; set; }
         public int TransactionsCount { get; set; }
-        public decimal ManagementFees { get; set; }  // calculate as a % 
+        public decimal ManagementFees { get; set; }
         public List<BankAccount> AffiliatedBankAccounts { get; set; }
 
         // Constructor
