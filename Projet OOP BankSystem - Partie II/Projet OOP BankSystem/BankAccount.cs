@@ -13,6 +13,7 @@ namespace Projet_OOP_BankSystem
         public decimal MaxWithdrawalLimit { get; set; }
         public int PeriodRangeMaxWithdrawal { get; set; } // 7 for 7 days // One week
         public List<Transaction> TransactionsHistory { get; set; }
+        public AccountManager Owner { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime TerminationDate { get; set; }
 
@@ -79,7 +80,7 @@ namespace Projet_OOP_BankSystem
             }
         }
 
-        public bool Transfer(BankAccount recipient, decimal amount)
+        public bool Transfer(BankAccount recipient, decimal amount, decimal managementFees)
         {
             if (amount < 0)
             {
@@ -98,9 +99,10 @@ namespace Projet_OOP_BankSystem
             }
             else
             {
-                recipient._balance += amount;
                 _balance -= amount;
-                Console.WriteLine($"Transfert de {amount} euros effectué depuis le compte n°{AccountNumber} vers le compte n°{recipient.AccountNumber}");
+                recipient._balance += (amount - managementFees);
+                Console.WriteLine($"Transfert de {amount} euros, dont {managementFees} euros de frais de gestion, effectué " +
+                    $"depuis le compte n°{AccountNumber} vers le compte n°{recipient.AccountNumber}");
                 return true;
             }
         }

@@ -213,6 +213,7 @@ namespace Projet_OOP_BankSystem
                         BankAccount senderAccount = FindBankAccountByNumber(senderBkAccNumber);
                         BankAccount recipientAccount = FindBankAccountByNumber(recipientBkAccNumber);
 
+
                         string status = "KO";
 
                         bool idAlreadyExists = transactionIdList.Any(id => id == transactionId);
@@ -241,8 +242,27 @@ namespace Projet_OOP_BankSystem
                                         }
                                         else
                                         {
-                                            new Transaction(transactionId, amount, senderBkAccNumber, recipientBkAccNumber);
-                                            res = senderAccount.Transfer(recipientAccount, amount);
+                                            AccountManager senderAccManager = senderAccount.Owner;
+                                            AccountManager recipientAccManager = recipientAccount.Owner;
+
+                                            if (recipientAccManager.AccManagerId == senderAccManager.AccManagerId)
+                                            {
+                                                // transaction endogène, pas de frais de gestion
+                                                res = senderAccount.Transfer(recipientAccount, amount, 0M);
+                                            }
+                                            else
+                                            {
+                                                // transaction exogène
+                                                if (senderAccManager.ClientType == "Particulier")
+                                                {
+                                                    decimal transactionMngtFee = amount * 0.01M;
+                                                    res = senderAccount.Transfer(recipientAccount, amount, transactionMngtFee);
+                                                }
+                                                else
+                                                {
+                                                    res = senderAccount.Transfer(recipientAccount, amount, senderAccManager.GlobalManagementFees);
+                                                }
+                                            }
                                         }
                                         if (res)
                                         {

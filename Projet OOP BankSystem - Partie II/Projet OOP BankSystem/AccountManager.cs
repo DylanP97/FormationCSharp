@@ -11,7 +11,7 @@ namespace Projet_OOP_BankSystem
         public int AccManagerId { get; set; }
         public string ClientType { get; set; }
         public int TransactionsCount { get; set; }
-        public decimal ManagementFees { get; set; }
+        public decimal GlobalManagementFees { get; set; }
         public List<BankAccount> AffiliatedBankAccounts { get; set; }
 
         // Constructor
@@ -20,15 +20,15 @@ namespace Projet_OOP_BankSystem
             AccManagerId = accId;
             ClientType = cType;
             TransactionsCount = trCount;
-            ManagementFees = CalculateManagementFees(cType);
+            GlobalManagementFees = CalculateManagementFees(cType);
             AffiliatedBankAccounts = new List<BankAccount>();
         }
 
-        public decimal CalculateManagementFees(string clientType)
+        public decimal CalculateManagementFees(string clientType, decimal amount = 0M)
         {
             if (clientType == "Entreprise") return 10.00M;
-            else if (clientType == "Particulier") return 0.01M; // calculate as a % 
-            else return 0.00M;
+            // no global management fees for "Particulier" as it varies with the transaction amount
+            else return 0M;
         }
 
         public BankAccount CreateBankAccount(int bankAccNbr, decimal initialBalance)
@@ -38,6 +38,7 @@ namespace Projet_OOP_BankSystem
             {
                 BankAccount newAcc = new BankAccount(bankAccNbr, initialBalance, 1000);
                 AffiliatedBankAccounts.Add(newAcc);
+                newAcc.Owner = this;
                 return newAcc;
             }
             else
@@ -55,6 +56,7 @@ namespace Projet_OOP_BankSystem
             {
                 BankAccount accToDelete = AffiliatedBankAccounts.Find(acc => acc.AccountNumber == bankAccNbr);
                 AffiliatedBankAccounts.Remove(accToDelete);
+                accToDelete.Owner = null;
                 Console.WriteLine($"Le compte bancaire n°{bankAccNbr} a été supprimé avec succès.");
                 return true;
             }
@@ -67,25 +69,26 @@ namespace Projet_OOP_BankSystem
 
         public bool InitiateTransferBankAccountOwnershipRequest(AccountManager targetNewOwner, int targetBankAccNbr)
         {
-            List<BankAccount> newOwnerBankAccounts = targetNewOwner.AffiliatedBankAccounts;
-            newOwnerBankAccounts.Any(acc => acc.AccountNumber == targetBankAccNbr);
-            BankAccount targetedBankAcc = newOwnerBankAccounts.Find(acc => acc.AccountNumber == targetBankAccNbr);
-            if (targetedBankAcc != null)
+            bool hasAccountOwnership = AffiliatedBankAccounts.Any(acc => acc.AccountNumber == targetBankAccNbr);
+            if (hasAccountOwnership)
             {
+                BankAccount targetedBankAcc = AffiliatedBankAccounts.Find(acc => acc.AccountNumber == targetBankAccNbr);
                 targetNewOwner.ApproveTransferBankAccountOwnershipRequest(targetedBankAcc);
                 return true;
             }
             else
             {
-                Console.WriteLine($"Le gestionnaire n°{targetNewOwner.AccManagerId} n'est pas propriétaire du compte bancaire n°{targetBankAccNbr}. Changement de gestionnaire avorté.");
+                Console.WriteLine($"Le gestionnaire {AccManagerId} n'est pas propriétaire du compte n°{targetBankAccNbr} et ne peut donc pas l'envoyer.");
                 return false;
             }
         }
 
         public void ApproveTransferBankAccountOwnershipRequest(BankAccount targetedBankAcc)
         {
-            targetedBankAcc.AccountNumber = AccManagerId;
-            Console.WriteLine($"Transfert de gestionnaire effectué! Le gestionnaire {AccManagerId} est le nouveau propriétaire du compte n°{targetedBankAcc.AccountNumber}");
+            AffiliatedBankAccounts.Add(targetedBankAcc);
+            targetedBankAcc.Owner = this;
+            Console.WriteLine($"Transfert de gestionnaire effectué! Le gestionnaire {AccManagerId} est le nouveau propriétaire " +
+                $"du compte n°{targetedBankAcc.AccountNumber}");
         }
     }
 
