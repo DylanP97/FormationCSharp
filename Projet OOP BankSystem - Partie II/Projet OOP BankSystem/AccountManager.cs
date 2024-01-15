@@ -23,14 +23,13 @@ namespace Projet_OOP_BankSystem
             AffiliatedBankAccounts = new List<BankAccount>();
         }
 
-        public BankAccount CreateBankAccount(int bankAccNbr, decimal initialBalance)
+        public BankAccount CreateBankAccount(int bankAccNbr, decimal initialBalance, DateTime dateOpe)
         {
             BankAccount accExisting = AffiliatedBankAccounts.Find(acc => acc.AccountNumber == bankAccNbr);
             if (accExisting == null)
             {
-                BankAccount newAcc = new BankAccount(bankAccNbr, initialBalance, 1000);
+                BankAccount newAcc = new BankAccount(bankAccNbr, initialBalance, 1000, dateOpe, this);
                 AffiliatedBankAccounts.Add(newAcc);
-                newAcc.Owner = this;
                 return newAcc;
             }
             else
@@ -40,7 +39,7 @@ namespace Projet_OOP_BankSystem
             }
         }
 
-        public bool TerminateBankAccount(int bankAccNbr)
+        public bool TerminateBankAccount(int bankAccNbr, DateTime dateOpe)
         {
             bool exist = AffiliatedBankAccounts.Any(acc => acc.AccountNumber == bankAccNbr);
 
@@ -49,6 +48,7 @@ namespace Projet_OOP_BankSystem
                 BankAccount accToDelete = AffiliatedBankAccounts.Find(acc => acc.AccountNumber == bankAccNbr);
                 AffiliatedBankAccounts.Remove(accToDelete);
                 accToDelete.Owner = null;
+                accToDelete.TerminationDate = dateOpe;
                 Console.WriteLine($"Le compte bancaire n°{bankAccNbr} a été supprimé avec succès.");
                 return true;
             }

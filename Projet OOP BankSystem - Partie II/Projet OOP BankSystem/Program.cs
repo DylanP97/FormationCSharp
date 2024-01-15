@@ -139,7 +139,7 @@ namespace Projet_OOP_BankSystem
 
                                 if (entryAccManager != null)
                                 {
-                                    BankAccount newlyCreatedBankAcc = entryAccManager.CreateBankAccount(bankAccNbr, balance);
+                                    BankAccount newlyCreatedBankAcc = entryAccManager.CreateBankAccount(bankAccNbr, balance, dateOpe);
                                     if (newlyCreatedBankAcc != null)
                                     {
                                         bankAccountsList.Add(newlyCreatedBankAcc);
@@ -161,7 +161,7 @@ namespace Projet_OOP_BankSystem
                                 BankAccount bankAccToDelete = FindBankAccountByNumber(bankAccNbr);
                                 if (bankAccToDelete != null)
                                 {
-                                    bool res = exitAccManager.TerminateBankAccount(bankAccNbr);
+                                    bool res = exitAccManager.TerminateBankAccount(bankAccNbr, dateOpe);
                                     if (res)
                                     {
                                         status = "OK";
@@ -239,11 +239,13 @@ namespace Projet_OOP_BankSystem
 
                                         if (recipientBkAccNumber == 0)
                                         {
-                                            res = senderAccount.Withdraw(amount);
+                                            Transaction trst = new Transaction(transactionId, "Withdrawal", amount, 0, senderBkAccNumber, 0, dateEff);
+                                            res = senderAccount.Withdraw(amount, trst);
                                         }
                                         else if (senderBkAccNumber == 0)
                                         {
-                                            res = recipientAccount.Deposit(amount);
+                                            Transaction trst = new Transaction(transactionId, "Deposit", amount, 0, 0, recipientBkAccNumber, dateEff);
+                                            res = recipientAccount.Deposit(amount, trst);
                                         }
                                         else
                                         {
@@ -270,7 +272,7 @@ namespace Projet_OOP_BankSystem
                                                     transactionMngtFee = 10.00M;
                                                 }
                                             }
-                                            res = senderAccount.Transfer(recipientAccount, amount, transactionMngtFee);
+                                            res = senderAccount.Transfer(recipientAccount, amount, transactionMngtFee, transactionId, dateEff);
                                         }
                                         if (res)
                                         {

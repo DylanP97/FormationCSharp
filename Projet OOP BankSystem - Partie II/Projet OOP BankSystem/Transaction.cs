@@ -9,18 +9,23 @@ namespace Projet_OOP_BankSystem
     class Transaction
     {
         public int TransactionId { get; set; }
-        public decimal Amount { get; set; }
+        public string TransactionType { get; set; }
+        public decimal AmountDebited { get; set; }
+        public decimal Fees { get; set; }
         public int SenderAccountNumber { get; set; }
         public int RecipientAccountNumber { get; set; }
         public DateTime EffectiveDate { get; set; }
 
         // Constructor
-        public Transaction(int transactionId, decimal amount, int senderAccountNumber, int recipientAccountNumber)
+        public Transaction(int transactionId, string transactionType, decimal amountDebited, decimal managementFees, int senderAccountNumber, int recipientAccountNumber, DateTime effectiveDate)
         {
             TransactionId = transactionId;
-            Amount = amount;
+            TransactionType = transactionType;
+            AmountDebited = amountDebited;
+            Fees= managementFees ;
             SenderAccountNumber = senderAccountNumber;
             RecipientAccountNumber = recipientAccountNumber;
+            EffectiveDate = effectiveDate;
         }
     }
 }
