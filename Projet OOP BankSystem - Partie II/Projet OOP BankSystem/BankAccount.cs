@@ -114,7 +114,7 @@ namespace Projet_OOP_BankSystem
 
         public void ApproveDirectDebitRequest(BankAccount requestingAccount, decimal amount)
         {
-            Transfer(requestingAccount, amount);
+            Transfer(requestingAccount, amount, 0M);
         }
 
         public string GetBalance()

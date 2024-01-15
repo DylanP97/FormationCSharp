@@ -11,7 +11,7 @@ namespace Projet_OOP_BankSystem
         public int AccManagerId { get; set; }
         public string ClientType { get; set; }
         public int TransactionsCount { get; set; }
-        public decimal GlobalManagementFees { get; set; }
+        public decimal TotalTransactionManagementFees { get; set; }
         public List<BankAccount> AffiliatedBankAccounts { get; set; }
 
         // Constructor
@@ -20,15 +20,7 @@ namespace Projet_OOP_BankSystem
             AccManagerId = accId;
             ClientType = cType;
             TransactionsCount = trCount;
-            GlobalManagementFees = CalculateManagementFees(cType);
             AffiliatedBankAccounts = new List<BankAccount>();
-        }
-
-        public decimal CalculateManagementFees(string clientType, decimal amount = 0M)
-        {
-            if (clientType == "Entreprise") return 10.00M;
-            // no global management fees for "Particulier" as it varies with the transaction amount
-            else return 0M;
         }
 
         public BankAccount CreateBankAccount(int bankAccNbr, decimal initialBalance)

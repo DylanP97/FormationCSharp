@@ -232,6 +232,11 @@ namespace Projet_OOP_BankSystem
                                     {
                                         transactionIdList.Add(transactionId);
                                         bool res;
+                                        decimal transactionMngtFee = 0M;
+                                        bool isTransfer = false;
+                                        AccountManager senderAccManager = null;
+                                        AccountManager recipientAccManager = null;
+
                                         if (recipientBkAccNumber == 0)
                                         {
                                             res = senderAccount.Withdraw(amount);
@@ -242,30 +247,38 @@ namespace Projet_OOP_BankSystem
                                         }
                                         else
                                         {
-                                            AccountManager senderAccManager = senderAccount.Owner;
-                                            AccountManager recipientAccManager = recipientAccount.Owner;
+                                            isTransfer = true;
+                                            senderAccManager = senderAccount.Owner;
+                                            recipientAccManager = recipientAccount.Owner;
 
                                             if (recipientAccManager.AccManagerId == senderAccManager.AccManagerId)
                                             {
                                                 // transaction endogène, pas de frais de gestion
-                                                res = senderAccount.Transfer(recipientAccount, amount, 0M);
+                                                transactionMngtFee = 0M;
                                             }
                                             else
                                             {
-                                                // transaction exogène
+                                                // transaction exogène, calcul frais de gestion
                                                 if (senderAccManager.ClientType == "Particulier")
                                                 {
-                                                    decimal transactionMngtFee = amount * 0.01M;
-                                                    res = senderAccount.Transfer(recipientAccount, amount, transactionMngtFee);
+                                                    // si Particulier calculer 1% de la transaction
+                                                    transactionMngtFee = amount * 0.01M;
                                                 }
                                                 else
                                                 {
-                                                    res = senderAccount.Transfer(recipientAccount, amount, senderAccManager.GlobalManagementFees);
+                                                    // si Entreprise envoyer 10.00M de frais
+                                                    transactionMngtFee = 10.00M;
                                                 }
                                             }
+                                            res = senderAccount.Transfer(recipientAccount, amount, transactionMngtFee);
                                         }
                                         if (res)
                                         {
+                                            if (isTransfer)
+                                            {
+                                                AccountManager senderManagerToUpdate = accountManagersList.Find(acc => acc.AccManagerId == senderAccManager.AccManagerId);
+                                                senderManagerToUpdate.TotalTransactionManagementFees += transactionMngtFee;
+                                            }
                                             totalAmountTransactionsOK += amount;
                                             nbrTransactionsOK += 1;
                                             status = "OK";
@@ -377,6 +390,18 @@ namespace Projet_OOP_BankSystem
                         }
                     }
 
+                    string generateMngtFeesSummaryLines()
+                    {
+                        StringBuilder summaryBuilder = new StringBuilder();
+
+                        foreach (var accMan in accountManagersList)
+                        {
+                            summaryBuilder.AppendLine($"{accMan.AccManagerId} : {accMan.TotalTransactionManagementFees} euros");
+                        }
+
+                        return summaryBuilder.ToString();
+                    }
+
                     void WriteStatisticsFile()
                     {
                         List<string> lines = new List<string>
@@ -389,8 +414,7 @@ namespace Projet_OOP_BankSystem
                             $"Montant total des réussites : {totalAmountTransactionsOK} euros",
                             "",
                             $"Frais de gestions :",
-                            // Add other lines as needed
-                            //$"Identifiant gestionnaire : {} euros"
+                            generateMngtFeesSummaryLines(),
                         };
 
                         foreach (string line in lines)
