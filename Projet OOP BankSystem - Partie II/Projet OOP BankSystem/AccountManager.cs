@@ -10,7 +10,7 @@ namespace Projet_OOP_BankSystem
     {
         public int AccManagerId { get; set; }
         public string ClientType { get; set; }
-        public int TransactionsCount { get; set; }
+        public int TransactionsCountLimit { get; set; }
         public decimal TotalTransactionManagementFees { get; set; }
         public List<BankAccount> AffiliatedBankAccounts { get; set; }
 
@@ -19,7 +19,7 @@ namespace Projet_OOP_BankSystem
         {
             AccManagerId = accId;
             ClientType = cType;
-            TransactionsCount = trCount;
+            TransactionsCountLimit = trCount;
             AffiliatedBankAccounts = new List<BankAccount>();
         }
 

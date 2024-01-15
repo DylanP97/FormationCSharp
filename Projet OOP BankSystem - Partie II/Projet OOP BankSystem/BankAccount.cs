@@ -40,7 +40,7 @@ namespace Projet_OOP_BankSystem
             Owner = owner;
         }
 
-        public bool Withdraw(decimal amount, Transaction transac)
+        public bool Withdraw(decimal amount, Transaction transac, int transactionCountLimit)
         {
             if (amount < 0)
             {
@@ -57,9 +57,8 @@ namespace Projet_OOP_BankSystem
                 Console.WriteLine($"Un retrait doit être inférieur à la limite de retrait. Limite : {MaxWithdrawalLimit} // Montant à retirer : {amount}");
                 return false;
             }
-            else if (isWithdrawalAuthorized(amount, transac.EffectiveDate) == false)
+            else if (isWithdrawalAuthorized(amount, transac.EffectiveDate, transactionCountLimit) == false)
             {
-                Console.WriteLine($"Vous avez retirer plus de {MaxWithdrawalLimit} euros ces {DaysRangeMaxWithdrawalLimit} derniers jours.");
                 return false;
             }
             else
@@ -71,7 +70,7 @@ namespace Projet_OOP_BankSystem
             }
         }
 
-        private bool isWithdrawalAuthorized(decimal amount, DateTime dateTrs)
+        private bool isWithdrawalAuthorized(decimal amount, DateTime dateTrs, int transactionCountLimit)
         {
             DateTime closingDateLimit = dateTrs.AddDays(-DaysRangeMaxWithdrawalLimit);
 
@@ -81,9 +80,24 @@ namespace Projet_OOP_BankSystem
                 .Where(t => t.TransactionType == "Withdrawal")
                 .Sum(t => t.AmountDebited);
 
+            // Calcul du montant total des retraits avec le nombre de transactions
+            decimal totalWithdrawalsWithCountLimit = TransactionsHistory
+                .Where(t => t.TransactionType == "Withdrawal")
+                .OrderByDescending(t => t.EffectiveDate) // Assuming there is a TransactionDate property to determine the order
+                .Take(2)    
+                .Sum(t => t.AmountDebited);
+
             // Vérification si le montant total des retraits dans la période dépasse la limite autorisée
             if (totalWithdrawalsInPeriod + amount > MaxWithdrawalLimit)
             {
+                Console.WriteLine($"Vous avez retirer plus de {MaxWithdrawalLimit} euros ces {DaysRangeMaxWithdrawalLimit} derniers jours.");
+                return false;
+            }
+
+            // Vérification si le nombre des dernières transactions dépasse la limite de 1000,00€
+            if (totalWithdrawalsWithCountLimit + amount > 1000)
+            {
+                Console.WriteLine($"Vous avez retirer plus de 1000 euros sur les {transactionCountLimit} dernières transactions.");
                 return false;
             }
 
@@ -134,16 +148,6 @@ namespace Projet_OOP_BankSystem
                 return true;
             }
         }
-
-        //public void InitiateDirectDebitRequest(BankAccount requestedAccount, decimal amount)
-        //{
-        //    // Le compte expéditeur doit être en capacité d'effectuer le virement depuis leur compte
-        //}
-
-        //public void ApproveDirectDebitRequest(BankAccount requestingAccount, decimal amount, Transaction transac)
-        //{
-        //    // Transfer(requestingAccount, amount, 0M, transac, DateTime.Now());
-        //}
 
         public string GetBalance()
         {

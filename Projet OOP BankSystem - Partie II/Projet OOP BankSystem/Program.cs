@@ -60,7 +60,6 @@ namespace Projet_OOP_BankSystem
                     ReadInputFile(trxnPath);
                     Console.WriteLine();
 
-
                     // la ligne suivante convertie le string du champ date en DateTime et nous l'utilisons ensuite pour trier la liste
                     // il faut être sûr aussi de parser la date dans le format "fr-FR" dd/MM/yyyy pour ne pas se retrouver
                     // avec des erreurs si il y a un changement de poste où la région du système est "en-US" par exemple
@@ -239,8 +238,10 @@ namespace Projet_OOP_BankSystem
 
                                         if (recipientBkAccNumber == 0)
                                         {
+                                            senderAccManager = senderAccount.Owner;
+                                            int transactionCountLimit = senderAccManager.TransactionsCountLimit;
                                             Transaction trst = new Transaction(transactionId, "Withdrawal", amount, 0, senderBkAccNumber, 0, dateEff);
-                                            res = senderAccount.Withdraw(amount, trst);
+                                            res = senderAccount.Withdraw(amount, trst, transactionCountLimit);
                                         }
                                         else if (senderBkAccNumber == 0)
                                         {
